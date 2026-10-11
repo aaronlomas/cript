@@ -1,0 +1,50 @@
+[package]
+name = "cript"
+version = "0.1.0"
+description = "Cript — Secure Credential Manager"
+authors = ["you"]
+edition = "2021"
+license = "GPL-3.0-only"
+
+[lib]
+name = "cript_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon"] }
+tauri-plugin-opener = "2"
+tauri-plugin-clipboard-manager = "2"
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+
+# Database
+sqlx = { version = "0.8", default-features = false, features = ["sqlite", "runtime-tokio-rustls", "macros", "migrate"] }
+
+# Local secrets engine SDK
+criptor = { git = "https://github.com/aaronlomas/criptor.git", branch = "main" }
+
+# Utilities
+base64 = "0.21"
+rand = "0.8"
+uuid = { version = "1", features = ["v4"] }
+zeroize = { version = "1", features = ["derive"] }
+chrono = { version = "0.4", features = ["serde"] }
+anyhow = "1"
+dirs-next = "2"
+tauri-plugin-dialog = "2.7.0"
+
+[dependencies.libsqlite3-sys]
+version = "0.30"
+default-features = false
+features = ["bundled-sqlcipher-vendored-openssl"]
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-updater = "2"

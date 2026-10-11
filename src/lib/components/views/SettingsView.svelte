@@ -1,0 +1,119 @@
+<script lang="ts">
+  /**
+   * @component SettingsView
+   * @description Main application settings view. 
+   * Organize options into panels (Theme, Language, Security, Performance, etc.) 
+   * and handles side navigation.
+   */
+  import { themeStore } from "$lib/stores/theme.svelte";
+  import { performanceStore } from "$lib/stores/performance.svelte";
+  import { uiState } from "$lib/stores/stores.svelte";
+  import {
+    IconPalette,
+    IconLanguage,
+    IconRocket,
+    IconShieldCheck,
+    IconArrowLeft,
+    IconRefresh,
+    IconInfoCircle
+  } from "@tabler/icons-svelte";
+  import { _ } from "svelte-i18n";
+  import { changeLanguage, t } from "$lib/i18n";
+  
+  import SettingsNav from "../features/settings/SettingsNav.svelte";
+  
+  // Panels
+  import ThemePanel from "../features/settings/panels/ThemePanel.svelte";
+  import LanguagePanel from "../features/settings/panels/LanguagePanel.svelte";
+  import PerformancePanel from "../features/settings/panels/PerformancePanel.svelte";
+  import SecurityPanel from "../features/settings/panels/security/SecurityPanel.svelte";
+  import AboutPanel from "../features/settings/panels/AboutPanel.svelte";
+
+  let activeSection = $state("theme");
+
+  async function handleRestore() {
+    await themeStore.resetToDefaults();
+    await changeLanguage("es");
+    performanceStore.setMassiveList(false);
+  }
+
+  const sections = $derived([
+    { id: "theme", label: $_("settings.tabs.theme"), icon: IconPalette },
+    { id: "language", label: $_("settings.tabs.language"), icon: IconLanguage },
+    { id: "security", label: $_("settings.tabs.security"), icon: IconShieldCheck },
+    { id: "performance", label: $_("settings.tabs.performance"), icon: IconRocket },
+    { id: "about", label: t("settings.tabs.system"), icon: IconInfoCircle },
+  ]);
+
+  const panelMap: any = {
+    theme: ThemePanel,
+    language: LanguagePanel,
+    security: SecurityPanel,
+    performance: PerformancePanel,
+    about: AboutPanel
+  };
+
+  const ActivePanel = $derived(panelMap[activeSection]);
+</script>
+
+<div
+  class=" h-full grid grid-rows-[auto_auto_1fr]"
+>
+  <!-- HEADER -->
+  <header class="flex items-center justify-between gap-4 shrink-0 mb-4">
+    <div class="flex gap-x-4 items-center">
+      <button
+        class="p-2 bg-surface/5 hover:bg-surface/10 rounded-full text-text-muted hover:text-text-primary transition-colors cursor-pointer"
+        onclick={() => (uiState.activeView = "general")}
+        aria-label="Back"
+      >
+        <IconArrowLeft size={20} />
+      </button>
+      <div>
+        <h1
+          class="text-xl font-bold bg-linear-to-br from-text-primary to-accent-light bg-clip-text text-transparent pointer-events-none"
+        >
+          {$_("settings.title")}
+        </h1>
+        <p class="text-text-muted text-sm pointer-events-none">
+          {t("settings.subtitle", "Personaliza tu experiencia en Cript")}
+        </p>
+      </div>
+    </div>
+
+    <button
+      class="inline-flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-medium cursor-pointer transition-all border border-surface/10 bg-surface/5 text-text-secondary hover:bg-surface/10 hover:text-text-primary"
+      onclick={handleRestore}
+    >
+      <IconRefresh size={16} />
+      {$_("actions.restore")}
+    </button>
+  </header>
+
+  <!-- OPTIONS -->
+  <div class="flex border border-surface/8 min-w-0 overflow-y-auto">
+    <!-- Sidebar Navigation -->
+    <SettingsNav {sections} bind:activeSection />
+  </div>
+
+  <!-- CONTENT AREA -->
+  <main
+    class="bg-surface/4 w-full h-full p-4 overflow-y-auto"
+  >
+    <div class="max-w-2xl mx-auto h-full">
+      {#key activeSection}
+        <div class="grid gap-4 animate-in fade-in slide-in-from-right-4 duration-300">
+          {#if ActivePanel}
+            <ActivePanel />
+          {/if}
+        </div>
+      {/key}
+    </div>
+  </main>
+</div>
+
+<style>
+  main {
+    scrollbar-gutter: stable;
+  }
+</style>

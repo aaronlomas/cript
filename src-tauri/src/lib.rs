@@ -1,0 +1,90 @@
+//! # Cript — Secure Credential Manager Backend
+//!
+//! Este crate conecta la aplicación Tauri. La lógica real vive en el SDK `criptor`:
+//!
+//! - [`criptor::client`] — Cliente `CriptorClient` framework-agnostico
+//! - [`criptor::crypto`] — Cifrado ChaCha20-Poly1305 + Argon2id
+//! - [`criptor::vault`]  — Motor principal del baúl
+//! - [`state`]           — Re-exporta `CriptorClient` como `AppState`
+
+mod commands;
+mod state;
+
+// ─── App Entry Point ─────────────────────────────────────────────────────────
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    // Resuelve la ruta de la base de datos en el directorio de datos del SO:
+    //   Linux:   ~/.local/share/cript/vault.crp
+    //   macOS:   ~/Library/Application Support/cript/vault.crp
+    //   Windows: %APPDATA%\cript\vault.crp
+    let db_path = {
+        let dir = dirs_next::data_local_dir()
+            .unwrap_or_else(|| std::path::PathBuf::from("."))
+            .join("cript");
+        std::fs::create_dir_all(&dir).ok();
+        dir.join("vault.crp")
+    };
+
+    tauri::Builder::default()
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_clipboard_manager::init())
+        .manage(state::AppState::new(db_path))
+        .invoke_handler(tauri::generate_handler![
+            // ── Vault & accounts ──────────────────────────────────────────
+            commands::vault::is_vault_initialized,
+            commands::vault::unlock_vault,
+            commands::vault::verify_master_password,
+            commands::vault::lock_vault,
+            commands::vault::delete_vault,
+            commands::vault::add_account,
+            commands::vault::get_accounts,
+            commands::vault::delete_account,
+            commands::vault::generate_password,
+            commands::vault::decrypt_secret,
+            // ── Groups ────────────────────────────────────────────────────
+            commands::vault::update_account_group,
+            commands::vault::rename_group,
+            commands::vault::delete_group,
+            // ── PINs ──────────────────────────────────────────────────────
+            commands::vault::add_pin,
+            commands::vault::get_pins,
+            commands::vault::delete_pin,
+            commands::vault::update_pin_group,
+            // ── Documents ─────────────────────────────────────────────────
+            commands::vault::add_document,
+            commands::vault::get_documents,
+            commands::vault::update_document,
+            commands::vault::delete_document,
+            commands::vault::decrypt_document_content,
+            commands::vault::get_crypto_params,
+            // ── Preferences & storage ─────────────────────────────────────
+            commands::settings::get_preference,
+            commands::settings::set_preference,
+            commands::settings::import_background_image,
+            commands::settings::get_background_data_url,
+            commands::settings::get_data_dir,
+            commands::settings::read_external_file,
+            commands::settings::get_app_info,
+            commands::settings::get_os_username,
+            commands::settings::export_db,
+            commands::settings::import_db,
+            commands::settings::export_secure_package,
+            commands::settings::import_secure_package,
+            // ── Security ──────────────────────────────────────────────────
+            commands::security::totp_is_enabled,
+            commands::security::totp_setup,
+            commands::security::totp_verify_setup,
+            commands::security::totp_check,
+            commands::security::totp_recovery_check,
+            commands::security::totp_disable,
+            commands::security::is_vault_locked,
+            commands::security::remote_session_active,
+            // ── Shell CLI ─────────────────────────────────────────────────
+            commands::shell::shell_query,
+        ])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}

@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Pixelify Sans", "Press Start 2P", system-ui, sans-serif;
+  --font-mono: "VT323", "Press Start 2P", monospace;
+
+  /* Colors — Violet (default theme) */
+  --color-bg-base: #07070e;
+  --color-bg-surface: #0d0d1a;
+  --color-bg-overlay: #12122a;
+
+  --color-accent: #7c3aed;
+  --color-accent-light: #ffffff;
+  --color-accent-glow: rgba(124, 58, 237, 0.35);
+  --color-accent-dim: rgba(124, 58, 237, 0.15);
+
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+
+  --color-text-primary: var(--text-primary, var(--fallback-text-primary));
+  --color-text-secondary: var(--text-secondary, var(--fallback-text-secondary));
+  --color-text-muted: var(--text-muted, #848487);
+
+  /* Semantic Surfaces */
+  --color-surface: var(--surface);
+  --color-panel: var(--panel);
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+
+  /* Animations */
+  --animate-spin-slow: spin 3s linear infinite;
+  --animate-shake: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+
+  @keyframes shake {
+    10%,
+    90% {
+      transform: translate3d(-1px, 0, 0);
+    }
+    20%,
+    80% {
+      transform: translate3d(2px, 0, 0);
+    }
+    30%,
+    50%,
+    70% {
+      transform: translate3d(-4px, 0, 0);
+    }
+    40%,
+    60% {
+      transform: translate3d(4px, 0, 0);
+    }
+  }
+}
+
+@layer base {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+    font-family: "Roboto Condensed", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: var(--color-text-primary);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── Theming variables ────────────────────────────────────────────────── */
+  :root {
+    --surface: #ffffff; /* glass objects are white with opacity in dark mode */
+    --panel: #000000; /* deep panels are black with opacity in dark mode */
+    --fallback-text-primary: #ffffff;
+    --fallback-text-secondary: #9999a3;
+    --color-surface-dim: rgba(255, 255, 255, 0.07);
+  }
+
+  :root.light-mode {
+    --surface: #000000; /* glass objects are black with opacity in light mode */
+    --panel: #ffffff; /* deep panels are white with opacity in light mode */
+    --fallback-text-primary: #0f172a;
+    --fallback-text-secondary: #475569;
+    --color-surface-dim: rgba(0, 0, 0, 0.05);
+  }
+
+  /* ─── Dynamic Background ───────────────────────────────────────────────── */
+
+  /* Default: radial gradient (no custom background) */
+  body {
+    background: var(--bg-image-layer, none), var(--bg-solid-color, #07070e);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  /* ─── Custom Scrollbar ─────────────────────────────────────────────────── */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-muted);
+  }
+
+  /* ─── Automatic Tooltips ───────────────────────────────────────────────── */
+  [data-tooltip] {
+    position: relative;
+    &::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: 50%;
+      top: calc(100% + 8px);
+      transform: translateX(-50%);
+      background: var(--color-bg-overlay);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--color-text-secondary);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 50;
+    }
+    &:hover::after {
+      opacity: 1;
+    }
+  }
+}
+
+/* ─── Custom Caps Lock Indicator ─────────────────────────────────────────── */
+input::-webkit-caps-lock-indicator {
+  content: none !important;
+  display: none !important;
+}
+input::-ms-clear, input::-ms-reveal {
+  display: none !important;
+}
+/* ─── Application Layout ─────────────────────────────────────────────── */
+@layer components {
+  .app-layout {
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .main-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 16px;
+    min-width: 0;
+    transition: padding-left 0.2s ease;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  /* ─── AccountsView Styles ─────────────────────────────────────────────── */
+  .virtual-list-wrapper {
+    height: calc(100vh - 260px);
+    min-height: 300px;
+  }
+
+  /* ─── Sidebar Styles ──────────────────────────────────────────────────── */
+  .nav-item-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    background-color: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
+    text-align: left;
+  }
+
+  .nav-item-btn:hover {
+    background-color: var(--color-surface-dim, rgba(255, 255, 255, 0.07));
+    color: var(--color-accent);
+  }
+
+  .nav-item-btn.active {
+    background-color: var(--color-accent-dim);
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}

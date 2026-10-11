@@ -1,0 +1,309 @@
+<script lang="ts">
+  import Button from "$lib/components/core/primitives/Button.svelte"
+  import { sessionState } from "$lib/stores/stores.svelte";
+  import { unlockVault, isVaultInitialized } from "$lib/utils/tauri";
+  import { onMount } from "svelte";
+  import {
+    IconLock,
+    IconSignRight,
+    IconShieldCheck,
+    IconLifebuoy,
+    IconCircleCheck,
+  } from "@tabler/icons-svelte";
+  import { invoke } from "@tauri-apps/api/core";
+  import { _ } from "svelte-i18n";
+  import Logo from "$lib/components/ui/Logo.svelte";
+
+  import MasterPasswordForm from "./unlock/MasterPasswordForm.svelte";
+  import TotpForm from "./unlock/TotpForm.svelte";
+  import RecoveryForm from "./unlock/RecoveryForm.svelte";
+
+  const version = import.meta.env.APP_VERSION;
+  const status = import.meta.env.APP_STATUS;
+
+  let password = $state("");
+  let totpCode = $state("");
+  let pendingTotp = $state(false);
+  let error = $state("");
+  let loading = $state(false);
+  let isNew = $state(false);
+  let confirmPassword = $state("");
+  let cooldown = $state(0);
+
+  let recoveryCode = $state("");
+  let isRecovery = $state(false);
+  let recoverySuccess = $state(false);
+  let isShaking = $state(false);
+
+  // Auto-submit TOTP when 6 digits are reached
+  $effect(() => {
+    const clean = totpCode.replace(/\s/g, "");
+    if (clean.length === 6 && !loading && !error) {
+      submit();
+    }
+  });
+
+  onMount(async () => {
+    try {
+      isNew = !(await isVaultInitialized());
+    } catch {}
+  });
+
+  async function submit() {
+    if (cooldown > 0) return;
+    error = "";
+
+    if (!pendingTotp) {
+      if (!password) {
+        error = $_("unlock_screen.error_empty");
+        return;
+      }
+      if (isNew && password !== confirmPassword) {
+        error = $_("unlock_screen.error_mismatch");
+        return;
+      }
+
+      loading = true;
+      try {
+        const status = await unlockVault(password);
+        if (status === "totp_required") {
+          pendingTotp = true;
+          // We don't clear password yet because we might need it for re-auth if TOTP fails?
+          // Actually, once status is totp_required, the vault is partially unlocked in the backend.
+        } else {
+          password = ""; // Security: Clear password from memory
+          sessionState.isUnlocked = true;
+        }
+      } catch (e: any) {
+        handleError(e);
+      } finally {
+        loading = false;
+      }
+    } else {
+      const cleanTotp = totpCode.replace(/\s/g, "");
+      if (cleanTotp.length !== 6) {
+        error = $_("settings.security.totp_error_invalid");
+        return;
+      }
+      loading = true;
+      try {
+        const valid = await invoke<boolean>("totp_check", { code: cleanTotp });
+        if (valid) {
+          password = ""; // Security: Clear secrets
+          totpCode = "";
+          sessionState.isUnlocked = true;
+        } else {
+          error = $_("settings.security.totp_error_invalid");
+        }
+      } catch (e: any) {
+        error = $_("settings.security.totp_error_invalid");
+      } finally {
+        loading = false;
+      }
+    }
+  }
+
+  async function submitRecovery() {
+    if (recoverySuccess) {
+      completeRecovery();
+      return;
+    }
+    const cleanRecovery = recoveryCode.replace(/\s/g, "");
+    if (!cleanRecovery) return;
+    loading = true;
+    error = "";
+    try {
+      const valid = await invoke<boolean>("totp_recovery_check", {
+        code: cleanRecovery,
+      });
+      if (valid) {
+        recoverySuccess = true;
+      }
+    } catch (e: any) {
+      error = $_("settings.security.totp_recovery_error");
+    } finally {
+      loading = false;
+    }
+  }
+
+  function completeRecovery() {
+    isRecovery = false;
+    pendingTotp = false;
+    recoverySuccess = false;
+    recoveryCode = "";
+    password = "";
+    isNew = false;
+    error = "";
+  }
+
+  function handleError(e: any) {
+    const errStr = String(e ?? "");
+
+    if (errStr.includes("Remote session detected")) {
+      error = $_("unlock_screen.error_remote_session");
+      return;
+    }
+
+    error = $_("unlock_screen.error_incorrect");
+    isShaking = true;
+    setTimeout(() => (isShaking = false), 500);
+
+    cooldown = Math.floor(Math.random() * 3) + 1;
+    const timer = setInterval(() => {
+      cooldown--;
+      if (cooldown <= 0) clearInterval(timer);
+    }, 1000);
+  }
+
+  function resetUnlock() {
+    pendingTotp = false;
+    isRecovery = false;
+    totpCode = "";
+    recoveryCode = "";
+    error = "";
+    invoke("lock_vault");
+  }
+</script>
+
+<div class="h-full min-h-0 overflow-y-auto grid grid-rows-[auto_1fr_auto]">
+  <header
+    class=" bg-panel/30 px-6 py-4 flex items-center justify-between m-2 rounded-sm"
+  >
+    <a
+      class="flex items-center gap-x-2 text-lg font-bold text-text-primary tracking-tight cursor-pointer transition-all"
+      target="_blank"
+      href="https://github.com/aaronlomas/cript/releases"
+      >{$_("unlock_screen.news")}
+      <IconSignRight size={16} />
+    </a>
+
+    <div class="flex items-center gap-3"></div>
+  </header>
+
+  <div
+    class="max-w-90 m-auto p-8 flex flex-col items-center gap-2 bg-panel/30 backdrop-blur-2xl rounded-2xl border border-surface/8 {isShaking
+      ? 'animate-shake'
+      : ''}"
+  >
+    <div class="flex">
+      {#if recoverySuccess}
+        <IconCircleCheck size={72} class="text-accent" />
+      {:else if isRecovery}
+        <IconLifebuoy size={72} class="text-warning" />
+      {:else if pendingTotp}
+        <IconShieldCheck size={72} class="text-accent" />
+      {:else}
+        <Logo sizeY={90} sizeX={120} class="text-accent drop-shadow-lg" />
+      {/if}
+    </div>
+    <p
+      class="text-text-primary text-sm text-center mb-6 max-w-70 pointer-events-none"
+    >
+      {#if recoverySuccess}
+        {$_("settings.security.totp_recovery_success")}
+      {:else if isRecovery}
+        {$_("settings.security.totp_recovery_desc")}
+      {:else if pendingTotp}
+        {$_("settings.security.totp_unlock_desc")}
+      {:else if isNew}
+        {$_("unlock_screen.new_vault_desc")}
+      {:else}
+        {$_("unlock_screen.unlock_vault_desc")}
+      {/if}
+    </p>
+
+    <form
+      onsubmit={(e) => {
+        e.preventDefault();
+        if (recoverySuccess) completeRecovery();
+        else if (isRecovery) submitRecovery();
+        else submit();
+      }}
+      class="w-full flex flex-col gap-4"
+    >
+      {#if !pendingTotp}
+        <MasterPasswordForm
+          bind:password
+          bind:confirmPassword
+          {isNew}
+          {cooldown}
+        />
+      {:else if isRecovery}
+        <RecoveryForm
+          bind:recoveryCode
+          {recoverySuccess}
+          oncancel={() => {
+            isRecovery = false;
+            error = "";
+          }}
+        />
+      {:else}
+        <TotpForm bind:totpCode onreset={resetUnlock} />
+      {/if}
+
+      {#if error}
+        <p
+          class="text-danger text-xs py-2 px-3 bg-danger/10 border border-danger/20 rounded-md"
+        >
+          {error}
+        </p>
+      {/if}
+
+      <Button
+        type="submit"
+        class="gap-1"
+        disabled={loading || cooldown > 0}
+      >
+        {#if loading}
+          <span
+            class="w-3.5 h-3.5 border-2 border-surface/30 border-t-white rounded-full animate-spin"
+          ></span>
+          {$_("actions.status.processing")}
+        {:else if cooldown > 0}
+          <span class="animate-pulse"
+            >{$_("unlock_screen.wait_seconds", {
+              values: { seconds: cooldown },
+            })}</span
+          >
+        {:else if recoverySuccess}
+          <IconCircleCheck size={18} /> {$_("settings.done_btn") || "OK"}
+        {:else if isRecovery}
+          <IconLifebuoy size={18} /> {$_("settings.security.totp_recovery_btn")}
+        {:else if isNew}
+          {$_("unlock_screen.button_create")}
+        {:else}
+          <IconLock size={18} /> {$_("unlock_screen.button_unlock")}
+        {/if}
+      </Button>
+
+      {#if pendingTotp && !isRecovery && !recoverySuccess}
+        <button
+          type="button"
+          class="text-[10px] uppercase tracking-wider text-text-muted hover:text-warning transition-all cursor-pointer font-bold mt-2 self-center"
+          onclick={() => {
+            isRecovery = true;
+            error = "";
+          }}
+        >
+          {$_("settings.security.totp_recovery_link")}
+        </button>
+      {/if}
+    </form>
+
+    {#if isNew}
+      <p
+        class="text-xs text-warning text-center mt-2 p-2 px-3 bg-warning/10 rounded-md border border-warning/20"
+      >
+        {$_("unlock_screen.warning_new")}
+      </p>
+    {/if}
+  </div>
+
+  <footer class="mb-4 text-center text-text-muted text-xs tracking-wide">
+    <p>
+      {$_("unlock_screen.footer_rights")} -
+      <span class="font-semibold text-accent-light">v{version}</span>
+      {status}
+    </p>
+  </footer>
+</div>

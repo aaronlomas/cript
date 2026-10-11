@@ -1,0 +1,9 @@
+use crate::state::AppState;
+use tauri::State;
+
+/// Ejecuta un comando de texto en la CLI interna de Cript Core.
+/// Devuelve las líneas de respuesta formateadas como strings.
+#[tauri::command]
+pub async fn shell_query(input: String, state: State<'_, AppState>) -> Result<Vec<String>, String> {
+    Ok(state.query_shell(&input).await)
+}

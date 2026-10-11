@@ -1,0 +1,101 @@
+name: "Cript Build & Release"
+
+on:
+  push:
+    #
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write #Sigstore/Cosign
+
+jobs:
+  publish-tauri:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: "ubuntu-24.04" # for Desktop linux
+            args: ""
+          - platform: "windows-latest"
+            args: ""
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: setup node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+          cache: "pnpm"
+
+      - name: Install NASM
+        if: matrix.platform == 'windows-latest'
+        uses: ilammy/setup-nasm@v1
+
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup TCL (Windows only)
+        if: matrix.platform == 'windows-latest'
+        run: |
+          New-Item -ItemType Directory -Path "C:\tclbin"
+          New-Item -ItemType SymbolicLink -Path "C:\tclbin\tclsh.exe" -Target "C:\Program Files\Git\usr\bin\tclsh.exe"
+          echo "C:\tclbin" >> $env:GITHUB_PATH
+
+      - name: install dependencies (ubuntu only)
+        if: matrix.platform == 'ubuntu-24.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
+
+      - name: install frontend dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ github.ref_name }} 
+          releaseName: "Cript ${{ github.ref_name }}"
+          releaseBody: "See the assets below to download the new version of Cript."
+          releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.args }}
+
+      - name: Install Cosign
+        if: matrix.platform == 'ubuntu-24.04'
+        uses: sigstore/cosign-installer@v3.5.0
+
+      - name: Sign Linux Artifacts with Sigstore (Keyless)
+        if: matrix.platform == 'ubuntu-24.04'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for file in src-tauri/target/release/bundle/deb/*.deb src-tauri/target/release/bundle/appimage/*.AppImage; do
+            if [ -f "$file" ]; then
+              echo "Signing $file with Cosign..."
+              cosign sign-blob --yes "$file" --bundle "$file.sigstore"
+              
+              # Upload the signature to the release you just created/updated tauri-action
+              gh release upload "${{ github.ref_name }}" "$file.sigstore" --clobber
+            fi
+          done
+  #Notify Vercel of changes
+  deploy-vercel:
+    needs: publish-tauri
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel Deploy
+        run: |
+          curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK_URL }}"
