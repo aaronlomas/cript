@@ -139,7 +139,6 @@ Cript is free software under the **GPL-3.0** license.
 | [SECURITY.md](./SECURITY.md) | Security policy and vulnerability reporting |
 | [PRIVACY.md](./PRIVACY.md) | Privacy policy |
 | [TERMS.md](./TERMS.md) | Terms of use |
-| [AGENTS.md](./AGENTS.md) | Development rules and conventions |
 
 ## Our Website
 
