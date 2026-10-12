@@ -4,7 +4,6 @@
   import MainView from "$lib/components/views/MainView.svelte";
   import UnlockScreen from "$lib/components/views/UnlockScreen.svelte";
   import { sessionState, uiState } from "$lib/stores/stores.svelte";
-  import { themeStore } from "$lib/stores/theme.svelte";
   import { startAutoLock, stopAutoLock } from "$lib/utils/autoLock";
   import { invoke } from "@tauri-apps/api/core";
 

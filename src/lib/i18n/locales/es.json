@@ -268,37 +268,21 @@
       "desc": "Bloquea Cript si detecta conexiones remotas."
     },
     "theme": {
-      "accent_description": "El color de acento personaliza botones, iconos activos y elementos destacados. Cript generará automáticamente tonos claros y efectos de brillo basados en tu elección.",
-      "color_label": "Color de Acento",
-      "color_desc": "Selecciona tu color preferido",
-      "title_options": "Tema de Acento",
-      "text_options": "Tema de Texto",
       "appearance": "Apariencia",
+      "appearance_desc": "Selecciona el modo visual de la interfaz. Cript utiliza una estética de alta seguridad con acentos violeta.",
       "mode_light": "Claro",
+      "mode_light_desc": "Fondos iluminados y texto de alto contraste para ambientes luminosos.",
       "mode_dark": "Oscuro",
+      "mode_dark_desc": "Fondo minimalista negro profundo optimizado para menor fatiga visual.",
       "mode_system": "Sistema",
-      "presets_title": "Temas Recomendados",
-      "presets": {
-        "midnight_violet": "Violeta",
-        "ocean_light": "Océano Claro",
-        "matrix_dark": "Matrix",
-        "crimson_light": "Carmín Claro",
-        "nord_frost": "Escarcha Nord"
-      },
-      "bg_description": "Color de fondo",
-      "bg_dark": "Oscuro Puro (Por defecto)",
-      "bg_dark_desc": "Fondo minimalista negro profundo",
-      "bg_solid": "Color Sólido",
-      "bg_solid_desc": "Un color de fondo uniforme a tu elección",
-      "bg_solid_change": "Cambiar",
-      "bg_image": "Imagen Personalizada",
-      "bg_image_loading": "Cargando...",
-      "bg_image_click": "Se recomienda usar imágenes con tonos oscuros",
-      "bg_image_formats": "JPG, PNG, WEBP o GIF",
-      "text_primary_label": "Color de Texto Primario",
-      "text_primary_desc": "Color de los títulos y contenido principal",
-      "text_secondary_label": "Color de Texto Secundario",
-      "text_secondary_desc": "Color de etiquetas y textos de apoyo"
+      "mode_system_desc": "Se adapta automáticamente a la configuración visual de tu sistema operativo.",
+      "brand_title": "Tema Oficial Cript",
+      "brand_badge": "Tema Violeta Oficial",
+      "brand_desc": "Paleta exclusiva de alto contraste, acentos violeta y superficies translúcidas diseñadas para máxima privacidad y legibilidad.",
+      "preview_title": "Vista Previa",
+      "preview_sample_item": "Credencial protegida",
+      "preview_sample_category": "Bóveda Principal",
+      "preview_badge": "Cifrado AES-256-GCM"
     },
     "language": {
       "description": "Selecciona tu idioma preferido",
@@ -311,11 +295,9 @@
       "massive_list_desc": "Optimiza el rendimiento cuando gestionas grandes volúmenes de credenciales.",
       "massive_list_active_badge": "Activo con {count} credenciales"
     },
-    "about": {
-      "title": "Acerca de Cript",
-      "desc": "Información sobre la aplicación y licencias.",
-      "version_label": "Versión",
-      "core_label": "Cript Core"
+    "system": {
+      "title": "Sistema",
+      "desc": "Actualizaciones, cuenta y opciones avanzadas."
     },
     "account_system": {
       "title": "Cuenta",
@@ -333,7 +315,13 @@
       "update_not_found": "No se encontraron actualizaciones disponibles.",
       "update_error": "Error al buscar actualizaciones.",
       "update_available": "Actualización disponible",
-      "update_ready": "Actualización lista. Por favor, reinicie Cript."
+      "update_ready": "Actualización lista. Por favor, reinicie Cript.",
+      "checking": "Buscando...",
+      "updating": "Actualizando...",
+      "ready": "Listo",
+      "version_available": "Versión {version} disponible",
+      "linux_apt_install": "Actualización disponible. Ejecuta: 'sudo apt update && sudo apt install cript'",
+      "update_failed": "Error al actualizar: {error}"
     }
   },
   "unlock_screen": {
@@ -366,6 +354,15 @@
     "local_desc": "Tus datos nunca salen de tu dispositivo y el motor de seguridad reside en un proceso independiente. Esta arquitectura de aislamiento garantiza que tus secretos estén blindados frente a ataques externos y vulnerabilidades comunes en interfaces web.",
     "encryption_title": "Cifrado Fuerte",
     "encryption_desc": "Toda tu bóveda está protegida usando estándares de encriptación avanzados.",
+    "version_label": "Versión",
+    "core_label": "Cript Core",
+    "license_label": "Licencia",
+    "license_value": "GNU GPL v3.0",
+    "links_title": "Recursos",
+    "source_code": "Código fuente",
+    "releases": "Lanzamientos",
+    "security_link": "Política de seguridad",
+    "privacy_link": "Política de privacidad",
     "update_info": "Para actualizar este programa, debe volver a descargar la última versión desde {link}"
   },
   "groups": {

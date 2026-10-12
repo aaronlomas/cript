@@ -9,7 +9,6 @@
     IconLock,
   } from "@tabler/icons-svelte";
   import { invoke } from "@tauri-apps/api/core";
-  import { onMount } from "svelte";
   import Button from "../../../core/primitives/Button.svelte";
   import Modal from "../../../core/primitives/Modal.svelte";
   import ListItem from "../../../core/primitives/ListItem.svelte";
@@ -17,8 +16,6 @@
   import { toast } from "$lib/stores/toast.svelte";
   import { sessionState } from "$lib/stores/stores.svelte";
   import { check, type Update } from "@tauri-apps/plugin-updater";
-
-  let appInfo = $state({ app_version: "...", core_version: "..." });
 
   let showDeleteConfirm = $state(false);
   let password = $state("");
@@ -30,14 +27,6 @@
     "idle" | "checking" | "available" | "downloading" | "done"
   >("idle");
   let updateData = $state<Update | null>(null);
-
-  onMount(async () => {
-    try {
-      appInfo = await invoke("get_app_info");
-    } catch (e) {
-      console.error("Failed to fetch app info:", e);
-    }
-  });
 
   async function handleDeleteVault(e: SubmitEvent) {
     e.preventDefault();
@@ -86,11 +75,13 @@
         console.error("Update error:", err);
         // Fallback for unsupported platforms (like .deb on Linux)
         if (err.toString().toLowerCase().includes("unsupported")) {
-          toast.info(
-            "Update available. Please run: 'sudo apt update && sudo apt install cript'",
-          );
+          toast.info($_("settings.updater.linux_apt_install"));
         } else {
-          toast.error("Update failed: " + err.toString());
+          toast.error(
+            $_("settings.updater.update_failed", {
+              values: { error: err.toString() },
+            }),
+          );
         }
         updateState = "idle";
       }
@@ -104,27 +95,11 @@
   <div>
     <h2 class="text-xl font-bold text-text-primary flex items-center gap-2">
       <IconInfoCircle class="text-accent" />
-      {$_("settings.about.title")}
+      {$_("settings.system.title")}
     </h2>
     <p class="text-text-muted text-xs mt-1">
-      {$_("settings.about.desc")}
+      {$_("settings.system.desc")}
     </p>
-  </div>
-
-  <!-- Items -->
-
-  <div class="flex justify-between items-center border-b border-surface/8">
-    <span class="text-sm text-text-secondary"
-      >{$_("settings.about.version_label")}</span
-    >
-    <span class="text-sm font-mono text-accent">v{appInfo.app_version}</span>
-  </div>
-
-  <div class="flex justify-between items-center border-b border-surface/8">
-    <span class="text-sm text-text-secondary"
-      >{$_("settings.about.core_label")}</span
-    >
-    <span class="text-sm font-mono text-accent">v{appInfo.core_version}</span>
   </div>
 
   <!-- updater -->
@@ -137,7 +112,9 @@
       <p class="text-sm">{$_("settings.updater.sub_title")}</p>
       <p class="text-xs text-text-muted">
         {#if updateState === "available" && updateData}
-          Versión {updateData.version} disponible
+          {$_("settings.updater.version_available", {
+            values: { version: updateData.version },
+          })}
         {:else}
           {$_("settings.updater.desc")}
         {/if}
@@ -156,16 +133,16 @@
         <span
           class="w-3 h-3 border-2 border-text-primary/30 border-t-text-primary rounded-full animate-spin mr-1.5"
         ></span>
-        Buscando...
+        {$_("settings.updater.checking")}
       {:else if updateState === "available"}
         {$_("actions.update")}
       {:else if updateState === "downloading"}
         <span
           class="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin mr-1.5"
         ></span>
-        Actualizando...
+        {$_("settings.updater.updating")}
       {:else if updateState === "done"}
-        Listo
+        {$_("settings.updater.ready")}
       {/if}
     </Button>
   </ListItem>

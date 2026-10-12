@@ -12,7 +12,8 @@
   import { startPersistentLogListener } from "$lib/utils/logEvents";
   import { getCurrentWindow } from "@tauri-apps/api/window";
 
-  let initialized = false;
+  let { children } = $props();
+  let initialized = $state(false);
   const appWindow = getCurrentWindow();
 
   onMount(async () => {
@@ -77,7 +78,7 @@
   <div class="flex flex-col h-screen overflow-hidden">
     <TitleBar />
     <div class="flex-1 overflow-hidden">
-      <slot />
+      {@render children?.()}
     </div>
     <Cli />
   </div>

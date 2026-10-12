@@ -214,7 +214,7 @@
   },
   "settings": {
     "title": "Settings",
-    "subtitle": "Customize your experience in bóveda",
+    "subtitle": "Customize your experience in Cript",
     "done_btn": "Understood",
     "tabs": {
       "theme": "Theme",
@@ -240,7 +240,7 @@
       "totp_verify_btn": "Verify and activate",
       "totp_error_invalid": "The code is incorrect. Try again.",
       "totp_success_title": "2FA activated!",
-      "totp_success_desc": "From now on, bóveda will ask for a security code every time you unlock your vault.",
+      "totp_success_desc": "From now on, Cript will ask for a security code every time you unlock your vault.",
       "totp_done_btn": "Understood",
       "totp_unlock_desc": "Enter the 6-digit code from your authentication app.",
       "totp_back_to_password": "Back to password",
@@ -267,37 +267,21 @@
       "desc": "Block Cript if it detects remote connections."
     },
     "theme": {
-      "accent_description": "The accent color personalizes buttons, active icons, and highlighted elements. Cript will automatically generate light tones and glow effects based on your choice.",
-      "color_label": "Accent color",
-      "color_desc": "Select your preferred color",
-      "title_options": "Accent theme",
-      "text_options": "Text theme",
       "appearance": "Appearance",
+      "appearance_desc": "Select the visual mode for the interface. Cript uses a high-security design language with signature violet accents.",
       "mode_light": "Light",
+      "mode_light_desc": "Bright backgrounds and high-contrast text for daylight environments.",
       "mode_dark": "Dark",
+      "mode_dark_desc": "Deep black minimalist background optimized for reduced eye strain.",
       "mode_system": "System",
-      "presets_title": "Recommended themes",
-      "presets": {
-        "midnight_violet": "Violet",
-        "ocean_light": "Ocean light",
-        "matrix_dark": "Matrix dark",
-        "crimson_light": "Crimson light",
-        "nord_frost": "Nord frost"
-      },
-      "bg_description": "Background color",
-      "bg_dark": "Pure dark (default)",
-      "bg_dark_desc": "Deep black minimalist background",
-      "bg_solid": "Solid color",
-      "bg_solid_desc": "A uniform background color of your choice",
-      "bg_solid_change": "Change",
-      "bg_image": "Custom image",
-      "bg_image_loading": "Loading...",
-      "bg_image_click": "Images with dark tones are recommended",
-      "bg_image_formats": "jpg, png, webp or gif",
-      "text_primary_label": "Primary text color",
-      "text_primary_desc": "Color of titles and main content",
-      "text_secondary_label": "Secondary text color",
-      "text_secondary_desc": "Color of labels and supporting texts"
+      "mode_system_desc": "Automatically adapts to your operating system appearance preferences.",
+      "brand_title": "Official Cript Theme",
+      "brand_badge": "Official Violet Theme",
+      "brand_desc": "Exclusive high-contrast palette, signature violet accents, and translucent surfaces designed for privacy and clarity.",
+      "preview_title": "Preview",
+      "preview_sample_item": "Protected credential",
+      "preview_sample_category": "Main Vault",
+      "preview_badge": "AES-256-GCM Encrypted"
     },
     "language": {
       "description": "Select your preferred language",
@@ -310,11 +294,9 @@
       "massive_list_desc": "Optimize performance when managing large volumes of credentials.",
       "massive_list_active_badge": "Active with {count} credentials"
     },
-    "about": {
-      "title": "About",
-      "desc": "Information about the application and licenses.",
-      "version_label": "Version",
-      "core_label": "Cript Core"
+    "system": {
+      "title": "System",
+      "desc": "Updates, account and advanced options."
     },
     "account_system": {
       "title": "Account",
@@ -332,7 +314,13 @@
       "update_not_found": "No updates available.",
       "update_error": "Error updating. Please try again later.",
       "update_available": "Update available",
-      "update_ready": "Update ready. Please restart Cript."
+      "update_ready": "Update ready. Please restart Cript.",
+      "checking": "Checking...",
+      "updating": "Updating...",
+      "ready": "Ready",
+      "version_available": "Version {version} available",
+      "linux_apt_install": "Update available. Please run: 'sudo apt update && sudo apt install cript'",
+      "update_failed": "Update failed: {error}"
     }
   },
   "unlock_screen": {
@@ -357,7 +345,7 @@
     "is_required": "Is required"
   },
   "about_view": {
-    "title": "Why trust bóveda?",
+    "title": "Why trust Cript?",
     "subtitle": "Transparency, open source and security through isolation.",
     "opensource_title": "Open Source",
     "opensource_desc": "Cript is an open-source project. This means anyone can review the code to ensure there are no backdoors or hidden telemetry.",
@@ -365,6 +353,15 @@
     "local_desc": "Your data never leaves your device and the security engine resides in a separate process. This isolation architecture ensures your secrets are shielded from external attacks and common web interface vulnerabilities.",
     "encryption_title": "Strong encryption",
     "encryption_desc": "Your entire vault is protected using advanced encryption standards.",
+    "version_label": "Version",
+    "core_label": "Cript Core",
+    "license_label": "License",
+    "license_value": "GNU GPL v3.0",
+    "links_title": "Resources",
+    "source_code": "Source code",
+    "releases": "Releases",
+    "security_link": "Security policy",
+    "privacy_link": "Privacy policy",
     "update_info": "To update this program, you must download the latest version from {link}"
   },
   "groups": {
