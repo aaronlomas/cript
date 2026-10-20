@@ -4,8 +4,8 @@
   import { _ } from "svelte-i18n";
   import { writeText } from "@tauri-apps/plugin-clipboard-manager";
   import { IconRefresh } from "@tabler/icons-svelte";
-  import Button from "../../core/primitives/Button.svelte";
-  import IconButton from "../../core/primitives/IconButton.svelte";
+  import Button from "../../../core/primitives/Button.svelte";
+  import IconButton from "../../../core/primitives/IconButton.svelte";
   let { onuse }: { onuse: (pw: string) => void } = $props();
 
   let genLength = $state(20);
@@ -81,14 +81,14 @@
     >
       {genLoading ? $_("add_credential.generating") : genPreview}
     </code>
-      <IconButton
-        size="sm"
-        variant="default"
-        onclick={refreshPreview}
-        label={$_("add_credential.regenerate_tooltip")}
-      >
-        <IconRefresh size={16} />
-      </IconButton>
+    <IconButton
+      size="sm"
+      variant="default"
+      onclick={refreshPreview}
+      label={$_("add_credential.regenerate_tooltip")}
+    >
+      <IconRefresh size={16} />
+    </IconButton>
   </div>
 
   <div class="flex flex-col gap-2.5">

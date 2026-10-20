@@ -2,10 +2,10 @@
   import { _ } from "svelte-i18n";
   import { IconLock, IconEye, IconEyeOff } from "@tabler/icons-svelte";
   import { invoke } from "@tauri-apps/api/core";
-  import Modal from "../../core/primitives/Modal.svelte";
-  import Button from "../../core/primitives/Button.svelte";
-  import Input from "../../core/primitives/Input.svelte";
-  import IconButton from "../../core/primitives/IconButton.svelte";
+  import Modal from "../../../core/primitives/Modal.svelte";
+  import Button from "../../../core/primitives/Button.svelte";
+  import Input from "../../../core/primitives/Input.svelte";
+  import IconButton from "../../../core/primitives/IconButton.svelte";
 
   let {
     onconfirm,
@@ -28,7 +28,9 @@
     error = "";
 
     try {
-      const valid = await invoke<boolean>("verify_master_password", { password });
+      const valid = await invoke<boolean>("verify_master_password", {
+        password,
+      });
       if (valid) {
         onconfirm();
       } else {
@@ -44,7 +46,11 @@
   }
 </script>
 
-<Modal show={true} onclose={oncancel} title={$_("actions.unlock_capsule_label")}>
+<Modal
+  show={true}
+  onclose={oncancel}
+  title={$_("actions.unlock_capsule_label")}
+>
   <div class="space-y-6">
     <div class="bg-accent/5 border border-accent/10 rounded-xl p-4">
       <p class="text-xs text-text-secondary leading-relaxed">
@@ -62,7 +68,7 @@
         autofocus
         variant="triple"
         label={$_("unlock_screen.master_password_label")}
-        error={error}
+        {error}
       >
         {#snippet icon()}
           <IconLock size={18} class="text-text-muted" />
@@ -89,9 +95,16 @@
     <Button variant="ghost" onclick={oncancel}>
       {$_("actions.cancel")}
     </Button>
-    <Button type="submit" form="verify-master-form" class="gap-2" disabled={loading}>
+    <Button
+      type="submit"
+      form="verify-master-form"
+      class="gap-2"
+      disabled={loading}
+    >
       {#if loading}
-        <span class="w-3 h-3 border-2 border-surface/30 border-t-white rounded-full animate-spin mr-1.5"></span>
+        <span
+          class="w-3 h-3 border-2 border-surface/30 border-t-white rounded-full animate-spin mr-1.5"
+        ></span>
         {$_("actions.status.decryption")}
       {:else}
         <IconLock size={16} />

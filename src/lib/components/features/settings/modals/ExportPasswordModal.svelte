@@ -1,10 +1,15 @@
 <script lang="ts">
   import { _ } from "svelte-i18n";
-  import { IconLock, IconEye, IconEyeOff, IconDownload } from "@tabler/icons-svelte";
-  import Modal from "../../core/primitives/Modal.svelte";
-  import Button from "../../core/primitives/Button.svelte";
-  import Input from "../../core/primitives/Input.svelte";
-  import IconButton from "../../core/primitives/IconButton.svelte";
+  import {
+    IconLock,
+    IconEye,
+    IconEyeOff,
+    IconDownload,
+  } from "@tabler/icons-svelte";
+  import Modal from "../../../core/primitives/Modal.svelte";
+  import Button from "../../../core/primitives/Button.svelte";
+  import Input from "../../../core/primitives/Input.svelte";
+  import IconButton from "../../../core/primitives/IconButton.svelte";
 
   import { invoke } from "@tauri-apps/api/core";
   import { save } from "@tauri-apps/plugin-dialog";
@@ -42,9 +47,7 @@
           destPath: filePath,
           password: password,
         });
-        toast.success(
-          t("export_pack.success", { values: { path: filePath } }),
-        );
+        toast.success(t("export_pack.success", { values: { path: filePath } }));
         onconfirm(password);
       }
     } catch (e: any) {
@@ -87,7 +90,7 @@
         placeholder="••••••••••••"
         required
         autofocus
-        error={error}
+        {error}
       >
         {#snippet icon()}
           <IconLock size={18} class="text-text-muted" />
@@ -116,7 +119,9 @@
     </Button>
     <Button type="submit" form="export-form" class="gap-2" disabled={loading}>
       {#if loading}
-        <span class="w-3 h-3 border-2 border-surface/30 border-t-white rounded-full animate-spin mr-1.5"></span>
+        <span
+          class="w-3 h-3 border-2 border-surface/30 border-t-white rounded-full animate-spin mr-1.5"
+        ></span>
         {$_("actions.status.encrypting")}
       {:else}
         <IconDownload size={18} />

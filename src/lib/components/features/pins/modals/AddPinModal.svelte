@@ -4,11 +4,11 @@
   import { _ } from "svelte-i18n";
   import { useForm } from "$lib/validation/useForm.svelte";
   import { pinSchema, type PinForm } from "$lib/validation/schemas";
-  import Modal from "../../core/primitives/Modal.svelte";
-  import Button from "../../core/primitives/Button.svelte";
-  import Input from "../../core/primitives/Input.svelte";
-  import Textarea from "../../core/primitives/Textarea.svelte";
-  import IconButton from "../../core/primitives/IconButton.svelte";
+  import Modal from "../../../core/primitives/Modal.svelte";
+  import Button from "../../../core/primitives/Button.svelte";
+  import Input from "../../../core/primitives/Input.svelte";
+  import Textarea from "../../../core/primitives/Textarea.svelte";
+  import IconButton from "../../../core/primitives/IconButton.svelte";
 
   let { onadded, onclose }: { onadded?: () => void; onclose?: () => void } =
     $props();
@@ -30,11 +30,7 @@
   );
 </script>
 
-<Modal
-  show={true}
-  onclose={onclose}
-  title={$_("pin_security.new_pin")}
->
+<Modal show={true} {onclose} title={$_("pin_security.new_pin")}>
   <form
     id="add-pin-form"
     class="flex flex-col gap-4"

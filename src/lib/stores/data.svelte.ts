@@ -1,25 +1,8 @@
-export interface Account {
-  id: string;
-  site: string;
-  username: string;
-  password_cipher: string;
-  recovery_code_cipher: string | null;
-  notes_cipher: string | null;
-  favicon_url: string | null;
-  group_name: string | null;
-  created_at: string;
-  updated_at: string;
-}
+import type { Account } from "$lib/features/accounts/types";
+import type { Pin } from "$lib/features/pins/types";
 
-export interface Pin {
-  id: string;
-  name: string;
-  encrypted_pin: string;
-  encrypted_notes: string | null;
-  group_name: string | null;
-  created_at: string;
-  updated_at: string;
-}
+export type { Account } from "$lib/features/accounts/types";
+export type { Pin } from "$lib/features/pins/types";
 
 export interface Document {
   id: string;

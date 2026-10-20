@@ -3,10 +3,10 @@
   import { IconEye, IconEyeOff } from "@tabler/icons-svelte";
   import PasswordStrength from "./PasswordStrength.svelte";
   import PasswordGenerator from "./PasswordGenerator.svelte";
-  import Input from "../../core/primitives/Input.svelte";
-  import Textarea from "../../core/primitives/Textarea.svelte";
-  import Button from "../../core/primitives/Button.svelte";
-  import IconButton from "../../core/primitives/IconButton.svelte";
+  import Input from "../../../core/primitives/Input.svelte";
+  import Textarea from "../../../core/primitives/Textarea.svelte";
+  import Button from "../../../core/primitives/Button.svelte";
+  import IconButton from "../../../core/primitives/IconButton.svelte";
 
   interface Props {
     site?: string;

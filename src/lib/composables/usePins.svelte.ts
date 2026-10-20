@@ -1,5 +1,5 @@
 import { dataState } from "$lib/stores/stores.svelte";
-import { getPins, deletePin } from "$lib/utils/tauri";
+import { getPins, deletePin } from "$lib/features/pins/api";
 import { toast } from "$lib/stores/toast.svelte";
 import { modal } from "$lib/stores/modal.svelte";
 import { _ } from "svelte-i18n";

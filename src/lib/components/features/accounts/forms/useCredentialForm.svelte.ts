@@ -1,8 +1,10 @@
-import { addAccount } from "$lib/utils/tauri";
+import { addAccount } from "$lib/features/accounts/api";
 import { useForm } from "$lib/validation/useForm.svelte";
 import { credentialSchema, type CredentialForm } from "$lib/validation/schemas";
 
-export function useCredentialForm(getCallbacks: () => { onadded?: () => void; onclose?: () => void }) {
+export function useCredentialForm(
+  getCallbacks: () => { onadded?: () => void; onclose?: () => void },
+) {
   const form = useForm<CredentialForm>(
     credentialSchema,
     {
@@ -10,7 +12,7 @@ export function useCredentialForm(getCallbacks: () => { onadded?: () => void; on
       username: "",
       password: "",
       recoveryCode: "",
-      notes: ""
+      notes: "",
     },
     async (values) => {
       await addAccount(
@@ -18,12 +20,12 @@ export function useCredentialForm(getCallbacks: () => { onadded?: () => void; on
         values.username.trim(),
         values.password,
         values.recoveryCode?.trim() || "",
-        values.notes?.trim() || ""
+        values.notes?.trim() || "",
       );
       const callbacks = getCallbacks();
       callbacks.onadded?.();
       callbacks.onclose?.();
-    }
+    },
   );
 
   return form;

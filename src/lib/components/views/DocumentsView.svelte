@@ -3,7 +3,7 @@
   import { setContext } from "svelte";
   import { IconArrowLeft } from "@tabler/icons-svelte";
   import { DOCUMENTS_CTX } from "../features/documents/context";
-  import SaveNoteModal from "../modals/forms/SaveNoteModal.svelte";
+  import SaveNoteModal from "../features/documents/modals/SaveNoteModal.svelte";
   import BoardEditor from "../features/documents/board/BoardEditor.svelte";
   import Button from "../core/primitives/Button.svelte";
   import SelectionView from "../features/documents/SelectionView.svelte";

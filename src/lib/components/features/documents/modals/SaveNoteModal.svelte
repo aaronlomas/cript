@@ -2,10 +2,10 @@
   import { _ } from "svelte-i18n";
   import { useForm } from "$lib/validation/useForm.svelte";
   import { noteSchema, type NoteForm } from "$lib/validation/schemas";
-  import Modal from "../../core/primitives/Modal.svelte";
-  import Button from "../../core/primitives/Button.svelte";
-  import Input from "../../core/primitives/Input.svelte";
-  import Textarea from "../../core/primitives/Textarea.svelte";
+  import Modal from "../../../core/primitives/Modal.svelte";
+  import Button from "../../../core/primitives/Button.svelte";
+  import Input from "../../../core/primitives/Input.svelte";
+  import Textarea from "../../../core/primitives/Textarea.svelte";
 
   let {
     onclose,
@@ -24,11 +24,7 @@
   );
 </script>
 
-<Modal
-  show={true}
-  onclose={onclose}
-  title={$_("documents.save_note_title")}
->
+<Modal show={true} {onclose} title={$_("documents.save_note_title")}>
   <div class="space-y-6">
     <form
       id="save-note-form"

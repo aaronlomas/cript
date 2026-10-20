@@ -15,7 +15,7 @@
   import TotpStatusView from "./TotpStatusView.svelte";
   import TotpSetupView from "./TotpSetupView.svelte";
   import TotpRecoveryCodesView from "./TotpRecoveryCodesView.svelte";
-  import ExportPasswordModal from "../../../../modals/forms/ExportPasswordModal.svelte";
+  import ExportPasswordModal from "../../modals/ExportPasswordModal.svelte";
   import SessionTimeout from "./SessionTimeout.svelte";
   import RemoteConnection from "./RemoteConnection.svelte";
 

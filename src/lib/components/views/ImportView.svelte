@@ -11,7 +11,12 @@
   } from "@tabler/icons-svelte";
   import { _ } from "svelte-i18n";
   import { open } from "@tauri-apps/plugin-dialog";
-  import { addAccount, readExternalFile, getAccounts, deleteAccount } from "$lib/utils/tauri";
+  import {
+    addAccount,
+    readExternalFile,
+    getAccounts,
+    deleteAccount,
+  } from "$lib/features/accounts/api";
   import { parseCsv } from "$lib/utils/csvImporter";
   import Card from "$lib/components/core/primitives/Card.svelte";
   import ChoiceCard from "$lib/components/core/primitives/ChoiceCard.svelte";
@@ -54,7 +59,13 @@
       }
 
       for (const cred of credentials) {
-        await addAccount(cred.site, cred.username, cred.password, "", cred.notes);
+        await addAccount(
+          cred.site,
+          cred.username,
+          cred.password,
+          "",
+          cred.notes,
+        );
       }
 
       dataState.accounts = await getAccounts();
@@ -62,7 +73,11 @@
       const msg =
         skipped > 0
           ? $_("import_view.success_skipped", {
-              values: { count: credentials.length, format: detectedFormat, skipped },
+              values: {
+                count: credentials.length,
+                format: detectedFormat,
+                skipped,
+              },
             })
           : $_("import_view.success", {
               values: { count: credentials.length, format: detectedFormat },
@@ -70,7 +85,11 @@
       toast.success(msg);
       uiState.activeView = "accounts";
     } catch (e: any) {
-      toast.error($_("import_view.error_generic", { values: { message: e.message || e } }));
+      toast.error(
+        $_("import_view.error_generic", {
+          values: { message: e.message || e },
+        }),
+      );
     } finally {
       isImporting = false;
     }

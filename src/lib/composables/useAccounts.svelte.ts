@@ -1,5 +1,5 @@
 import { dataState } from "$lib/stores/stores.svelte";
-import { getAccounts, deleteAccount } from "$lib/utils/tauri";
+import { getAccounts, deleteAccount } from "$lib/features/accounts/api";
 import { toast } from "$lib/stores/toast.svelte";
 import { modal } from "$lib/stores/modal.svelte";
 import { _ } from "svelte-i18n";

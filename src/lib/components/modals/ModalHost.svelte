@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { modal } from '$lib/stores/modal.svelte';
-  import AddCredentialModal from './forms/AddCredentialModal.svelte';
-  import ConfirmModal from './confirmation/ConfirmModal.svelte';
-  import AssignGroupModal from '../organizer/groupColors/AssignGroupModal.svelte';
-  import ExportPasswordModal from './forms/ExportPasswordModal.svelte';
-  import ImportPackageModal from './forms/ImportPackageModal.svelte';
-  import AddPinModal from './forms/AddPinModal.svelte';
-  import VerifyMasterModal from './forms/VerifyMasterModal.svelte';
+  import { modal } from "$lib/stores/modal.svelte";
+  import AddCredentialModal from "../features/accounts/modals/AddCredentialModal.svelte";
+  import ConfirmModal from "./confirmation/ConfirmModal.svelte";
+  import AssignGroupModal from "../organizer/groupColors/AssignGroupModal.svelte";
+  import ExportPasswordModal from "../features/settings/modals/ExportPasswordModal.svelte";
+  import ImportPackageModal from "../features/settings/modals/ImportPackageModal.svelte";
+  import AddPinModal from "../features/pins/modals/AddPinModal.svelte";
+  import VerifyMasterModal from "../features/settings/modals/VerifyMasterModal.svelte";
 </script>
 
 <!--
@@ -15,33 +15,37 @@
   All modals share the same close path: modal.close().
 -->
 
-{#if modal.current?.kind === 'add-credential'}
+{#if modal.current?.kind === "add-credential"}
   <AddCredentialModal
     onadded={() => {
-      const payload = modal.current?.kind === 'add-credential' ? modal.current.payload : null;
+      const payload =
+        modal.current?.kind === "add-credential" ? modal.current.payload : null;
       modal.close();
       payload?.onadded?.();
     }}
     onclose={() => {
-      const payload = modal.current?.kind === 'add-credential' ? modal.current.payload : null;
+      const payload =
+        modal.current?.kind === "add-credential" ? modal.current.payload : null;
       modal.close();
       payload?.oncancel?.();
     }}
   />
-{:else if modal.current?.kind === 'add-pin'}
+{:else if modal.current?.kind === "add-pin"}
   <AddPinModal
     onadded={() => {
-      const payload = modal.current?.kind === 'add-pin' ? modal.current.payload : null;
+      const payload =
+        modal.current?.kind === "add-pin" ? modal.current.payload : null;
       modal.close();
       payload?.onadded?.();
     }}
     onclose={() => {
-      const payload = modal.current?.kind === 'add-pin' ? modal.current.payload : null;
+      const payload =
+        modal.current?.kind === "add-pin" ? modal.current.payload : null;
       modal.close();
       payload?.oncancel?.();
     }}
   />
-{:else if modal.current?.kind === 'confirm'}
+{:else if modal.current?.kind === "confirm"}
   <ConfirmModal
     title={modal.current.payload.title}
     message={modal.current.payload.message}
@@ -49,67 +53,77 @@
     cancelText={modal.current.payload.cancelText}
     type={modal.current.payload.type}
     onconfirm={() => {
-      const payload = modal.current?.kind === 'confirm' ? modal.current.payload : null;
+      const payload =
+        modal.current?.kind === "confirm" ? modal.current.payload : null;
       modal.close();
       payload?.onconfirm?.();
     }}
     oncancel={() => {
-      const payload = modal.current?.kind === 'confirm' ? modal.current.payload : null;
+      const payload =
+        modal.current?.kind === "confirm" ? modal.current.payload : null;
       modal.close();
       payload?.oncancel?.();
     }}
   />
-{:else if modal.current?.kind === 'assign-group'}
+{:else if modal.current?.kind === "assign-group"}
   <AssignGroupModal
     accountId={modal.current.payload.accountId}
     itemType={modal.current.payload.itemType}
     currentGroup={modal.current.payload.currentGroup}
     onassigned={() => {
-      const payload = modal.current?.kind === 'assign-group' ? modal.current.payload : null;
+      const payload =
+        modal.current?.kind === "assign-group" ? modal.current.payload : null;
       modal.close();
       payload?.onassigned?.();
     }}
     onclose={() => {
-      const payload = modal.current?.kind === 'assign-group' ? modal.current.payload : null;
+      const payload =
+        modal.current?.kind === "assign-group" ? modal.current.payload : null;
       modal.close();
       payload?.oncancel?.();
     }}
   />
-{:else if modal.current?.kind === 'export-package'}
+{:else if modal.current?.kind === "export-package"}
   <ExportPasswordModal
     onconfirm={(password) => {
-      const payload = modal.current?.kind === 'export-package' ? modal.current.payload : null;
+      const payload =
+        modal.current?.kind === "export-package" ? modal.current.payload : null;
       modal.close();
       payload?.onconfirm(password);
     }}
     oncancel={() => {
-      const payload = modal.current?.kind === 'export-package' ? modal.current.payload : null;
+      const payload =
+        modal.current?.kind === "export-package" ? modal.current.payload : null;
       modal.close();
       payload?.oncancel?.();
     }}
   />
-{:else if modal.current?.kind === 'import-package'}
+{:else if modal.current?.kind === "import-package"}
   <ImportPackageModal
     onconfirm={(password, strategy) => {
-      const payload = modal.current?.kind === 'import-package' ? modal.current.payload : null;
+      const payload =
+        modal.current?.kind === "import-package" ? modal.current.payload : null;
       modal.close();
       payload?.onconfirm(password, strategy);
     }}
     oncancel={() => {
-      const payload = modal.current?.kind === 'import-package' ? modal.current.payload : null;
+      const payload =
+        modal.current?.kind === "import-package" ? modal.current.payload : null;
       modal.close();
       payload?.oncancel?.();
     }}
   />
-{:else if modal.current?.kind === 'verify-master'}
+{:else if modal.current?.kind === "verify-master"}
   <VerifyMasterModal
     onconfirm={() => {
-      const payload = modal.current?.kind === 'verify-master' ? modal.current.payload : null;
+      const payload =
+        modal.current?.kind === "verify-master" ? modal.current.payload : null;
       modal.close();
       payload?.onconfirm();
     }}
     oncancel={() => {
-      const payload = modal.current?.kind === 'verify-master' ? modal.current.payload : null;
+      const payload =
+        modal.current?.kind === "verify-master" ? modal.current.payload : null;
       modal.close();
       payload?.oncancel?.();
     }}

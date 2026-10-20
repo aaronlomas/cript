@@ -3,17 +3,17 @@
    * @component AddCredentialModal
    * @description Form for adding new credentials to the vault.
    * Handles the validation and submission of user data, passwords, and recovery codes.
-   * 
+   *
    * @param {Object} props
    * @param {() => void} props.onadded - Callback successfully executed after saving the credential.
    * @param {() => void} props.onclose - Callback to close the modal.
    */
   import { _ } from "svelte-i18n";
-  import Modal from "../../core/primitives/Modal.svelte";
-  import Button from "../../core/primitives/Button.svelte";
-  import Alert from "../../core/feedback/Alert.svelte";
-  import CredentialFields from "./CredentialFields.svelte";
-  import { useCredentialForm } from "./useCredentialForm.svelte";
+  import Modal from "../../../core/primitives/Modal.svelte";
+  import Button from "../../../core/primitives/Button.svelte";
+  import Alert from "../../../core/feedback/Alert.svelte";
+  import CredentialFields from "../forms/CredentialFields.svelte";
+  import { useCredentialForm } from "../forms/useCredentialForm.svelte";
 
   let props = $props();
   const form = useCredentialForm(() => props);

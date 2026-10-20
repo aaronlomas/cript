@@ -8,11 +8,11 @@
     IconCopy,
     IconReplace,
   } from "@tabler/icons-svelte";
-  import Modal from "../../core/primitives/Modal.svelte";
-  import Button from "../../core/primitives/Button.svelte";
-  import Input from "../../core/primitives/Input.svelte";
-  import IconButton from "../../core/primitives/IconButton.svelte";
-  import ChoiceCard from "../../core/primitives/ChoiceCard.svelte";
+  import Modal from "../../../core/primitives/Modal.svelte";
+  import Button from "../../../core/primitives/Button.svelte";
+  import Input from "../../../core/primitives/Input.svelte";
+  import IconButton from "../../../core/primitives/IconButton.svelte";
+  import ChoiceCard from "../../../core/primitives/ChoiceCard.svelte";
 
   import { open } from "@tauri-apps/plugin-dialog";
   import { invoke } from "@tauri-apps/api/core";
@@ -39,7 +39,10 @@
       const filePath = await open({
         title: t("import_pack.select_database"),
         filters: [
-          { name: "Cript Vaults", extensions: ["crp", "db", "pack", "crp.pack"] },
+          {
+            name: "Cript Vaults",
+            extensions: ["crp", "db", "pack", "crp.pack"],
+          },
         ],
       });
 
@@ -93,11 +96,7 @@
   }
 </script>
 
-<Modal
-  show={true}
-  onclose={oncancel}
-  title={$_("import_pack.title")}
->
+<Modal show={true} onclose={oncancel} title={$_("import_pack.title")}>
   <div class="space-y-6">
     <form onsubmit={handleSubmit} class="space-y-6" id="import-form">
       <!-- Strategy Selection -->
@@ -161,7 +160,9 @@
     </Button>
     <Button type="submit" form="import-form" class="gap-2" disabled={loading}>
       {#if loading}
-        <span class="w-3 h-3 border-2 border-surface/30 border-t-white rounded-full animate-spin mr-1.5"></span>
+        <span
+          class="w-3 h-3 border-2 border-surface/30 border-t-white rounded-full animate-spin mr-1.5"
+        ></span>
         {$_("actions.status.decryption")}
       {:else}
         <IconDatabaseImport size={18} />
