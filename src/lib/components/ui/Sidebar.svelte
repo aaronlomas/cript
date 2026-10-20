@@ -119,7 +119,7 @@
 </script>
 
 <aside
-  class="relative h-full bg-panel/60 transition-colors border-r overflow-hidden flex flex-col gap-4 select-none {isResizing ? 'border-accent' : 'border-surface/8'}"
+  class="relative h-full bg-panel/60 transition-colors border-r overflow-hidden flex flex-col gap-4 select-none {isResizing ? 'border-accent' : 'border-accent/30'}"
   style="
     width: {uiState.sidebarWidth}px; 
     min-width: {uiState.sidebarWidth}px; 

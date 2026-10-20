@@ -1,7 +1,7 @@
 <script lang="ts">
   import { logStore } from "$lib/stores/log.svelte";
   import { uiState } from "$lib/stores/stores.svelte";
-  import { onMount, tick } from "svelte";
+  import { tick } from "svelte";
   import Terminal from "../terminal/Terminal.svelte";
   import { typewriter } from "$lib/utils/actions";
 
@@ -10,7 +10,12 @@
   let terminalRef: ReturnType<typeof Terminal> | undefined = $state();
 
   $effect(() => {
-    if (viewMode === "log" && logStore.entries.length > 0 && logContainer && uiState.cliOpen) {
+    if (
+      viewMode === "log" &&
+      logStore.entries.length > 0 &&
+      logContainer &&
+      uiState.cliOpen
+    ) {
       tick().then(() => {
         if (logContainer) {
           logContainer.scrollTop = logContainer.scrollHeight;
@@ -37,86 +42,155 @@
     isResizing = true;
     startY = e.clientY;
     startHeight = currentHeight;
-    document.body.style.cursor = 'ns-resize';
+    document.body.style.cursor = "ns-resize";
     e.preventDefault();
   }
 
   function stopResizing() {
     isResizing = false;
-    document.body.style.cursor = '';
+    document.body.style.cursor = "";
   }
 
   function resize(e: MouseEvent) {
     if (isResizing) {
       const delta = startY - e.clientY;
-      currentHeight = Math.max(100, Math.min(startHeight + delta, window.innerHeight * 0.8));
+      currentHeight = Math.max(
+        100,
+        Math.min(startHeight + delta, window.innerHeight * 0.8),
+      );
     }
   }
-  
 </script>
 
 <svelte:window onmousemove={resize} onmouseup={stopResizing} />
 
-<div 
-  class="terminal-log-container font-mono relative flex flex-col w-full bg-panel/30 border-t border-surface/8"
-  style={uiState.cliOpen ? `height: ${currentHeight}px;` : ''}
+<div
+  class={`terminal-log-container font-mono relative flex flex-col w-full bg-panel/30 border-t transition-colors ${
+    isResizing ? "border-accent" : "border-accent/30"
+  }`}
+  style={uiState.cliOpen ? `height: ${currentHeight}px;` : ""}
 >
   <!-- Drag Handle -->
   {#if uiState.cliOpen}
     <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div 
-      class="absolute top-0 left-0 w-full h-1 cursor-ns-resize z-20"
+    <div
+      class={`absolute top-0 left-0 w-full h-1 cursor-ns-resize z-20 transition-colors ${
+        isResizing ? "border-accent" : "border-accent/30"
+      }`}
       onmousedown={startResizing}
     ></div>
   {/if}
 
-  <div class="terminal-header grid grid-cols-[80px_80px_auto] grid-rows-[30px] items-center border-b border-surface/8">
-      <button 
-        class="text-xs font-medium transition-colors focus:outline-none h-full {viewMode === 'log' ? 'bg-surface/8' : 'hover:bg-surface/8'}"
-        onclick={() => { viewMode = "log"; uiState.cliOpen = true; }}
-      >
-        Log
-      </button>
-      <button 
-        class="text-xs font-medium transition-colors focus:outline-none h-full {viewMode === 'terminal' ? 'bg-surface/8' :  'hover:bg-surface/8'}"
-        onclick={() => { viewMode = "terminal"; uiState.cliOpen = true; }}
-      >
-        Terminal
-      </button>
+  <div
+    class="terminal-header grid grid-cols-[80px_80px_auto] grid-rows-[30px] items-center border-b border-surface/8"
+  >
+    <button
+      class="text-xs font-medium transition-colors focus:outline-none h-full {viewMode ===
+      'log'
+        ? 'bg-surface/8'
+        : 'hover:bg-surface/8'}"
+      onclick={() => {
+        viewMode = "log";
+        uiState.cliOpen = true;
+      }}
+    >
+      Log
+    </button>
+    <button
+      class="text-xs font-medium transition-colors focus:outline-none h-full {viewMode ===
+      'terminal'
+        ? 'bg-surface/8'
+        : 'hover:bg-surface/8'}"
+      onclick={() => {
+        viewMode = "terminal";
+        uiState.cliOpen = true;
+      }}
+    >
+      Terminal
+    </button>
 
     <div class="flex items-center justify-end gap-4 px-4 h-full">
-      <button 
+      <button
         class="text-text-muted hover:text-danger transition-colors focus:outline-none"
         onclick={clearCurrentView}
         title="Clear"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          ><path d="M3 6h18" /><path
+            d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"
+          /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /><line
+            x1="10"
+            y1="11"
+            x2="10"
+            y2="17"
+          /><line x1="14" y1="11" x2="14" y2="17" /></svg
+        >
       </button>
-      <button 
+      <button
         class="text-text-muted hover:text-text-primary transition-colors focus:outline-none"
-        onclick={() => uiState.cliOpen = !uiState.cliOpen}
+        onclick={() => (uiState.cliOpen = !uiState.cliOpen)}
         title={uiState.cliOpen ? "Collapse" : "Expand"}
       >
         {#if uiState.cliOpen}
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg
+          >
         {:else}
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"><path d="m18 15-6-6-6 6" /></svg
+          >
         {/if}
       </button>
     </div>
   </div>
-  
+
   {#if uiState.cliOpen}
     {#if viewMode === "log"}
-      <div 
+      <div
         bind:this={logContainer}
         class="terminal-content flex-1 px-4 py-2 overflow-y-auto font-mono text-sm leading-relaxed custom-scrollbar"
       >
         {#each logStore.entries as entry (entry.id)}
-          <div class="log-line flex p-1 hover:bg-white/5 hover:text-text-primary transition-colors rounded-sm text-text-primary/80">
-            <span class="shrink-0 mr-2 whitespace-pre text-text-muted" use:typewriter={{speed: 15}}>[{entry.timestamp}]</span>
-            <span class="shrink-0 w-24 whitespace-pre font-medium text-text-primary/90" use:typewriter={{speed: 15}}>[{entry.category}]</span>
-            <span class="break-all ml-1 text-text-primary/90" use:typewriter={{speed: 15}}>{entry.text}</span>
+          <div
+            class="log-line flex p-1 hover:bg-white/5 hover:text-text-primary transition-colors rounded-sm text-text-primary/80"
+          >
+            <span
+              class="shrink-0 mr-2 whitespace-pre text-text-muted"
+              use:typewriter={{ speed: 15 }}>[{entry.timestamp}]</span
+            >
+            <span
+              class="shrink-0 w-24 whitespace-pre font-medium text-text-primary/90"
+              use:typewriter={{ speed: 15 }}>[{entry.category}]</span
+            >
+            <span
+              class="break-all ml-1 text-text-primary/90"
+              use:typewriter={{ speed: 15 }}>{entry.text}</span
+            >
           </div>
         {/each}
         {#if logStore.entries.length === 0}
