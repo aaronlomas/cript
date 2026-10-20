@@ -129,7 +129,7 @@
 >
 
   <!-- Brand -->
-  <div class="flex items-center p-2 overflow-hidden whitespace-nowrap {isCollapsed ? 'justify-center gap-0' : 'gap-2'}">
+  <div class="flex items-center p-2 overflow-hidden whitespace-nowrap min-h-17.5 {isCollapsed ? 'justify-center gap-0' : 'gap-2'}">
     <div class="text-2xl shrink-0 w-10 h-10 flex items-center justify-center bg-transparent rounded-sm">
       <Logo size={32} class="text-text-primary" />
     </div>
