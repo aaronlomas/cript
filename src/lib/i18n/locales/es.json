@@ -39,7 +39,6 @@
       "opening": "Abriendo...",
       "loading": "Cargando...",
       "processing": "Procesando...",
-      "clearing": "Limpiando...",
       "generating": "Generando..."
     }
   },
@@ -49,6 +48,7 @@
     "export_db": "Exportar DB",
     "settings": "Configuración",
     "logout": "Cerrar Sesión",
+    "terminal": "Terminal",
     "collapse": "Ocultar",
     "my_credentials": "TU GUARDIAN",
     "documents": "Notas",
@@ -94,6 +94,8 @@
     "recovery_code_placeholder": "ABCD-1234-EFGH",
     "notes_label": "Notas (opcional)",
     "notes_placeholder": "Información adicional…",
+    "generating": "Generando…",
+    "generate_error": "Error al generar la contraseña",
     "regenerate_tooltip": "Regenerar",
     "length_label": "Longitud:",
     "symbols_label": "Símbolos",
@@ -191,8 +193,10 @@
     "replace_desc": "Limpiar y sobreescribir",
     "password_label": "Contraseña del Paquete",
     "password_error": "La contraseña debe tener al menos 8 caracteres.",
+    "select_database": "Seleccionar base de datos",
     "success_replace": "Baúl reemplazado con éxito.",
-    "success_merge": "Baúl importado y fusionado con éxito."
+    "success_merge": "Baúl importado y fusionado con éxito.",
+    "success_db": "Base de datos importada correctamente."
   },
   "import_view": {
     "subtitle": "Selecciona el tipo de importación.",
@@ -215,7 +219,7 @@
   },
   "settings": {
     "title": "Configuración",
-    "subtitle": "Personaliza tu experiencia en Cript",
+    "subtitle": "Personaliza tu experiencia",
     "done_btn": "Entendido",
     "tabs": {
       "theme": "Tema",
@@ -269,7 +273,7 @@
     },
     "theme": {
       "appearance": "Apariencia",
-      "appearance_desc": "Selecciona el modo visual de la interfaz. Cript utiliza una estética de alta seguridad con acentos violeta.",
+      "appearance_desc": "Selecciona el modo visual de la interfaz.",
       "mode_light": "Claro",
       "mode_light_desc": "Fondos iluminados y texto de alto contraste para ambientes luminosos.",
       "mode_dark": "Oscuro",
@@ -347,11 +351,11 @@
   },
   "about_view": {
     "title": "¿Por qué confiar en Cript?",
-    "subtitle": "Transparencia, código abierto y seguridad por aislamiento.",
-    "opensource_title": "Código Abierto",
-    "opensource_desc": "Cript es un proyecto de código abierto. Esto significa que cualquier persona puede revisar el código para asegurarse de que no hay puertas traseras ni telemetría oculta.",
-    "local_title": "Aislamiento Total",
-    "local_desc": "Tus datos nunca salen de tu dispositivo y el motor de seguridad reside en un proceso independiente. Esta arquitectura de aislamiento garantiza que tus secretos estén blindados frente a ataques externos y vulnerabilidades comunes en interfaces web.",
+    "subtitle": "Transparencia, control total y seguridad por aislamiento.",
+    "opensource_title": "Transparencia",
+    "opensource_desc": "Cript ofrece toda la transparencia necesaria para sus usuarios, viene de un repositorio activo, es totalmente de código abierto para demostrar su total honestidad.",
+    "local_title": "Comodidad",
+    "local_desc": "Cript nace de la necesitad de poder gestionar nuestros secretos de manera autónoma, sin servidores ni servicios externos, Cript simplemente es parte de tu vida privada.",
     "encryption_title": "Cifrado Fuerte",
     "encryption_desc": "Toda tu bóveda está protegida usando estándares de encriptación avanzados.",
     "version_label": "Versión",
@@ -363,7 +367,7 @@
     "releases": "Lanzamientos",
     "security_link": "Política de seguridad",
     "privacy_link": "Política de privacidad",
-    "update_info": "Para actualizar este programa, debe volver a descargar la última versión desde {link}"
+    "update_info": "Para más información y actualizaciones, visite {link}"
   },
   "groups": {
     "all": "Todas",
@@ -375,6 +379,7 @@
     "remove_from_group": "Quitar del grupo",
     "delete": "Eliminar grupo",
     "confirm_rename": "Confirmar nombre",
+    "confirm_new_group": "Confirmar grupo",
     "none": "Sin grupo",
     "pick_a_group": "Elige un grupo para esta credencial",
     "modal_title": "Asignar a grupo",

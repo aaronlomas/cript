@@ -45,7 +45,7 @@
   const Icon = $derived(icons[variant]);
 </script>
 
-<div class="relative w-full rounded-lg border p-4 [&>svg~*]:pl-7 [&>svg+div]:translate-y-3 [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground {variants[variant]} {className}" role="alert">
+<div class="relative w-full rounded-lg border [&>svg~*]:pl-7 [&>svg+div]:translate-y-3 [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground {variants[variant]} {className}" role="alert">
   <Icon size={16} />
   {#if title}
     <h5 class="mb-1 font-medium leading-none tracking-tight">{title}</h5>

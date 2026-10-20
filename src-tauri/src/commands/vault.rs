@@ -100,8 +100,21 @@ pub async fn delete_vault(
     password: SecretString,
     state: State<'_, AppState>,
 ) -> Result<(), String> {
-    state.delete_vault(password).await
+    state.delete_vault(password).await?;
+    // Cleanup auxiliary files to fully reset the vault state
+    let base_dir = state.base_dir.clone();
+    let db_path = state.db_path.clone();
+    let _ = std::fs::remove_file(base_dir.join(".vault_unlock_lock"));
+    let allowed = ["jpg", "jpeg", "png", "webp", "gif"];
+    for ext in &allowed {
+        let _ = std::fs::remove_file(base_dir.join(format!("background.{}", ext)));
+    }
+    let _ = std::fs::remove_file(db_path.with_extension("crp-wal"));
+    let _ = std::fs::remove_file(db_path.with_extension("crp-shm"));
+    let _ = std::fs::remove_file(db_path.with_file_name("vault.salt"));
+    Ok(())
 }
+
 
 #[tauri::command]
 pub async fn add_account(

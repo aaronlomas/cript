@@ -6,12 +6,13 @@
    */
   import Button from "../core/primitives/Button.svelte";
   import Capsule from "../core/primitives/Capsule.svelte";
+  import IconButton from "../core/primitives/IconButton.svelte";
+  import SearchInput from "../core/primitives/SearchInput.svelte";
   import { onMount } from "svelte";
   import { _, locale } from "svelte-i18n";
   import {
     IconArrowLeft,
     IconPlus,
-    IconSearch,
     IconDialpad,
   } from "@tabler/icons-svelte";
   import { uiState } from "$lib/stores/stores.svelte";
@@ -53,13 +54,15 @@
   <!-- Header -->
   <header class="flex items-center justify-between mb-7 gap-4">
     <div class="flex gap-x-4">
-      <button
-        class="p-2 bg-surface/5 hover:bg-surface/10 rounded-lg text-text-muted hover:text-text-primary transition-colors row-span-2 my-auto cursor-pointer"
+      <IconButton
+        size="md"
+        variant="default"
         onclick={() => (uiState.activeView = "general")}
-        aria-label="Back"
+        label={$_("actions.back")}
+        class="bg-surface/5 rounded-lg my-auto"
       >
         <IconArrowLeft size={20} />
-      </button>
+      </IconButton>
       <div>
         <h1
           class="text-xl font-bold bg-linear-to-br from-text-primary to-accent-light bg-clip-text text-transparent pointer-events-none"
@@ -79,18 +82,11 @@
   </header>
 
   <!-- Search -->
-  <div
-    class="flex items-center mb-6 border border-surface/10 rounded-lg text-text-primary px-4 py-3 focus-within:border-accent/50 transition-colors"
-  >
-    <div class="text-text-muted text-lg">
-      <IconSearch size={18} />
-    </div>
-    <input
-      class="w-full pl-4 bg-transparent text-sm placeholder:text-text-muted focus:outline-none transition-all"
-      bind:value={search}
-      placeholder={$_("pin_security.search_placeholder")}
-    />
-  </div>
+  <SearchInput
+    bind:value={search}
+    placeholder={$_("pin_security.search_placeholder")}
+    class="mb-6"
+  />
   <Group />
 
   {#if pinService.error}
@@ -100,16 +96,17 @@
       >
         {pinService.error}
       </p>
-      <button
-        class="block mx-auto mt-4 text-accent underline cursor-pointer"
+      <Button
+        variant="link"
         onclick={() => pinService.refresh()}
+        class="mx-auto mt-4 underline"
       >
         {$_("actions.retry")}
-      </button>
+      </Button>
     </div>
   {:else if filtered.length === 0}
     <div
-      class="text-center py-20 px-5 flex flex-col items-center gap-3 text-text-secondary bg-surface/4 backdrop-blur-2xl rounded-2xl border border-surface/8 shadow-xl"
+      class="text-center py-20 px-5 flex flex-col items-center gap-3 text-text-secondary bg-surface/8 rounded-2xl border border-surface/8 shadow-xl"
     >
       <div class="text-accent/20 mb-2">
         <IconDialpad size={80} stroke={1.5} />

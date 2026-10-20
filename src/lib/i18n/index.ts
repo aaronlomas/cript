@@ -5,42 +5,76 @@ import { invoke } from "@tauri-apps/api/core";
 register("en", () => import("./locales/en.json"));
 register("es", () => import("./locales/es.json"));
 
+// Language preference is persisted in localStorage because it must be read
+// before the encrypted vault is unlocked (the vault-backed preference store is
+// unavailable on startup). This mirrors the theme/performance stores.
+const LANGUAGE_STORAGE_KEY = "cript_language";
+const SUPPORTED_LOCALES = ["en", "es"] as const;
+type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
+
+function normalizeLocale(raw: string | null | undefined): SupportedLocale | null {
+  if (!raw) return null;
+  const base = raw.toLowerCase().split("-")[0];
+  return (SUPPORTED_LOCALES as readonly string[]).includes(base)
+    ? (base as SupportedLocale)
+    : null;
+}
+
+function readStoredLocale(): SupportedLocale | null {
+  try {
+    return normalizeLocale(localStorage.getItem(LANGUAGE_STORAGE_KEY));
+  } catch {
+    // localStorage unavailable (e.g. during SSR)
+    return null;
+  }
+}
+
+function writeStoredLocale(lang: SupportedLocale): void {
+  try {
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+  } catch (e) {
+    console.error("Failed to save language preference:", e);
+  }
+}
+
 let isInitialized = false;
 
 export async function initI18n() {
   if (isInitialized) return;
 
-  try {
-    // Attempt to load the user's preferred language from Tauri preferences
-    const savedLanguage = await invoke<string | null>("get_preference", {
-      key: "language",
-    });
+  // localStorage is the source of truth (readable before the vault is unlocked).
+  let initialLocale =
+    readStoredLocale() ?? normalizeLocale(getLocaleFromNavigator()) ?? "en";
 
-    // Determine the initial locale
-    const initialLocale = savedLanguage || getLocaleFromNavigator() || "en";
-
-    // Fallback to "en" or "es" based on initialLocale
-    const lang = initialLocale.startsWith("es") ? "es" : "en";
-
-    init({
-      fallbackLocale: "es",
-      initialLocale: lang,
-    });
-
-    isInitialized = true;
-  } catch (error) {
-    console.error("Failed to initialize i18n:", error);
-    // Ultimate fallback
-    init({
-      fallbackLocale: "en",
-      initialLocale: "en"
-    });
+  // Best-effort fallback to the vault preference (only available after unlock);
+  // never blocks startup if the vault is locked or Tauri is unavailable.
+  if (!readStoredLocale()) {
+    try {
+      const savedLanguage = await invoke<string | null>("get_preference", {
+        key: "language",
+      });
+      const vaultLocale = normalizeLocale(savedLanguage);
+      if (vaultLocale) {
+        initialLocale = vaultLocale;
+      }
+    } catch {
+      // Vault locked or command unavailable — keep the navigator/default locale.
+    }
   }
+
+  init({
+    fallbackLocale: "en",
+    initialLocale,
+  });
+
+  isInitialized = true;
 }
 
-// Function to change language and save preference
-export async function changeLanguage(lang: "en" | "es") {
+// Function to change language and persist it
+export async function changeLanguage(lang: SupportedLocale) {
   locale.set(lang);
+  writeStoredLocale(lang);
+  // Best-effort mirror into the vault preferences once it is unlocked.
   try {
     await invoke("set_preference", { key: "language", value: lang });
   } catch (error) {

@@ -10,6 +10,8 @@
 mod commands;
 mod state;
 
+use tauri::Manager;
+
 // ─── App Entry Point ─────────────────────────────────────────────────────────
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -32,6 +34,14 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_clipboard_manager::init())
         .manage(state::AppState::new(db_path))
+        .setup(|app| {
+            if let Some(window) = app.get_webview_window("main") {
+                if let Some(icon) = app.default_window_icon() {
+                    window.set_icon(icon.clone())?;
+                }
+            }
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             // ── Vault & accounts ──────────────────────────────────────────
             commands::vault::is_vault_initialized,

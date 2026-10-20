@@ -11,10 +11,12 @@
   import Button from "../../../../core/primitives/Button.svelte";
 
   // Props
-  let { recoveryCodes, onDone } = $props<{
+  interface Props {
     recoveryCodes: string[];
     onDone: () => void;
-  }>();
+  }
+
+  let { recoveryCodes, onDone }: Props = $props();
 
   // Local status for copy feedback
   let copied = $state(false);

@@ -7,6 +7,8 @@
   import { focus } from "$lib/utils/actions";
   import Modal from "../../core/primitives/Modal.svelte";
   import Button from "../../core/primitives/Button.svelte";
+  import Chip from "../../core/primitives/Chip.svelte";
+  import IconButton from "../../core/primitives/IconButton.svelte";
 
   // ── Props ──────────────────────────────────────────────────────────────────
   let {
@@ -82,23 +84,9 @@
     <p class="text-xs text-text-muted">{$_("groups.pick_a_group")}</p>
 
     <div class="flex flex-wrap gap-2">
-      <!-- "None" chip -->
-      <button
-        class="px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer border
-          {selected === null
-          ? 'bg-accent text-white border-accent shadow-sm shadow-accent/30'
-          : 'bg-surface/8 text-text-muted border-surface/10 hover:border-accent/40 hover:text-text-primary'}"
-        onclick={() => (selected = null)}
-      >
-        {$_("groups.none")}
-      </button>
-
       {#each dataState.groups as group (group)}
-        <button
-          class="px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer border
-            {selected === group
-            ? 'bg-accent text-white border-accent shadow-sm shadow-accent/30'
-            : 'bg-surface/8 text-text-muted border-surface/10 hover:border-accent/40 hover:text-text-primary'}"
+        <Chip
+          active={selected === group}
           onclick={() => (selected = group)}
         >
           {#if selected === group}
@@ -109,14 +97,14 @@
           {:else}
             {group}
           {/if}
-        </button>
+        </Chip>
       {/each}
 
       <!-- Add new group button / input -->
       {#if showNewInput}
         <div class="flex items-center gap-1">
           <input
-            class="px-2 py-1 rounded-full text-xs bg-surface/10 border border-accent/40 text-text-primary focus:outline-none focus:border-accent w-28"
+            class="p-2 rounded-full text-xs bg-surface/10 border border-accent/40 text-text-primary focus:outline-none focus:border-accent w-28"
             bind:value={newGroupName}
             placeholder={$_("groups.new_group_placeholder")}
             use:focus
@@ -131,22 +119,25 @@
               }
             }}
           />
-          <button
-            class="p-1 rounded-full bg-accent text-white cursor-pointer hover:bg-accent-hover transition-colors"
+          <IconButton
+            size="sm"
+            variant="primary"
             onclick={handleAddGroup}
-            aria-label={$_("groups.confirm_new_group")}
+            label={$_("groups.confirm_new_group")}
+            class="rounded-full"
           >
             <IconCheck size={11} />
-          </button>
+          </IconButton>
         </div>
       {:else}
-        <button
-          class="px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer border border-dashed border-surface/20 text-text-muted hover:border-accent/50 hover:text-accent inline-flex items-center gap-1"
+        <Chip
+          shape="full"
+          class="border-dashed"
           onclick={() => (showNewInput = true)}
         >
           <IconPlus size={11} />
           {$_("groups.new_group")}
-        </button>
+        </Chip>
       {/if}
     </div>
   </div>
@@ -160,7 +151,7 @@
       disabled={saving}
       class="min-w-24"
     >
-      {saving ? $_("actions.saving") : $_("actions.save")}
+      {saving ? $_("actions.status.saving") : $_("actions.save")}
     </Button>
   {/snippet}
 </Modal>

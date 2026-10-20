@@ -26,7 +26,7 @@
 </script>
 
 <button
-  class="flex flex-col items-start text-left p-6 gap-4 bg-surface/4 backdrop-blur-2xl rounded-2xl border shadow-xl hover:border-accent/30 hover:bg-surface/7 transition-all group disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer {active
+  class="flex flex-col items-start text-left p-6 gap-4 bg-surface/8 rounded-2xl border shadow-xl hover:border-accent/30 hover:bg-surface/10 transition-all group disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer {active
     ? 'border-accent bg-accent/10 ring-2 ring-accent/30 shadow-accent/5'
     : 'border-surface/8'} {className}"
   {onclick}

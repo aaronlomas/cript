@@ -16,6 +16,10 @@
   import { invoke } from "@tauri-apps/api/core";
   import { toast } from "$lib/stores/toast.svelte";
   import Capsule from "$lib/components/core/primitives/Capsule.svelte";
+  import IconButton from "$lib/components/core/primitives/IconButton.svelte";
+  import Menu from "$lib/components/core/primitives/Menu.svelte";
+  import MenuItem from "$lib/components/core/primitives/MenuItem.svelte";
+  import MenuSeparator from "$lib/components/core/primitives/MenuSeparator.svelte";
 
   // ── Props ──────────────────────────────────────────────────────────────────
   let {
@@ -135,17 +139,6 @@
   }
 </script>
 
-<!-- Click-outside handler to close menu -->
-<svelte:window
-  onclick={(e) => {
-    if (
-      menuOpen &&
-      !(e.target as HTMLElement)?.closest(`[data-card-id="${pinEntry.id}"]`)
-    ) {
-      menuOpen = false;
-    }
-  }}
-/>
 
 <Capsule
   class="border-surface/8 hover:border-accent/30"
@@ -182,57 +175,56 @@
       <!-- Actions row -->
       <div class="flex items-center shrink-0">
         <div class="relative">
-          <button
-            class="text-text-muted rounded-full transition-colors p-1 {expanded
-              ? 'hover:bg-surface/10 hover:text-text-primary cursor-pointer'
-              : 'opacity-50 cursor-default'}"
-            onclick={(e) => {
+          <IconButton
+            size="sm"
+            active={menuOpen}
+            disabled={!expanded}
+            onclick={() => {
               if (expanded) menuOpen = !menuOpen;
             }}
-            aria-label="Menu"
-            disabled={!expanded}
+            label={$_("groups.menu_label")}
+            class={expanded ? "" : "opacity-50"}
           >
             <IconDotsVertical size={16} />
-          </button>
+          </IconButton>
 
           {#if menuOpen}
+            <!-- svelte-ignore a11y_click_events_have_key_events -->
+            <!-- svelte-ignore a11y_no_static_element_interactions -->
             <div
-              class="absolute right-0 top-full mt-1 z-20 min-w-44 border border-surface/20 rounded-sm overflow-hidden animate-in fade-in zoom-in-95 duration-150 bg-panel/50 backdrop-blur-2xl"
-            >
-              <button
-                class="w-full flex items-center gap-2 p-2 px-3 text-sm text-text-secondary hover:bg-surface/10 hover:text-text-primary transition-colors cursor-pointer text-left"
-                onclick={openAssignGroup}
-              >
-                <IconFolderPlus size={15} class="text-accent shrink-0" />
-                {pinEntry.group_name
-                  ? $_("groups.change_group")
-                  : $_("groups.add_to_group")}
-              </button>
-
-              {#if pinEntry.group_name}
-                <button
-                  class="w-full flex items-center gap-2 p-2 px-3 text-sm text-text-secondary hover:bg-surface/10 hover:text-text-primary transition-colors cursor-pointer text-left"
-                  onclick={removeFromGroup}
-                >
-                  <IconFolderX size={15} class="text-text-muted shrink-0" />
-                  {$_("groups.remove_from_group")}
-                </button>
-              {/if}
-
-              <div class="h-px bg-surface/8 mx-2 my-1"></div>
-
-              <button
-                class="w-full flex items-center gap-2 p-2 px-3 text-sm text-danger hover:bg-danger/8 transition-colors cursor-pointer text-left"
-                onclick={() => {
-                  menuOpen = false;
-                  ondelete(pinEntry.id);
-                }}
-              >
-                <IconTrash size={15} class="shrink-0" />
-                {$_("actions.delete")}
-              </button>
-            </div>
+              class="fixed inset-0 z-10"
+              onclick={() => (menuOpen = false)}
+            ></div>
           {/if}
+
+          <Menu open={menuOpen}>
+            <MenuItem onclick={openAssignGroup}>
+              <IconFolderPlus size={15} class="text-accent shrink-0" />
+              {pinEntry.group_name
+                ? $_("groups.change_group")
+                : $_("groups.add_to_group")}
+            </MenuItem>
+
+            {#if pinEntry.group_name}
+              <MenuItem onclick={removeFromGroup}>
+                <IconFolderX size={15} class="text-text-muted shrink-0" />
+                {$_("groups.remove_from_group")}
+              </MenuItem>
+            {/if}
+
+            <MenuSeparator />
+
+            <MenuItem
+              variant="danger"
+              onclick={() => {
+                menuOpen = false;
+                ondelete(pinEntry.id);
+              }}
+            >
+              <IconTrash size={15} class="shrink-0" />
+              {$_("actions.delete")}
+            </MenuItem>
+          </Menu>
         </div>
       </div>
     </div>
@@ -254,25 +246,23 @@
       </code>
 
       <div class="flex items-center">
-        <button
-          class="p-2 text-text-muted hover:text-text-primary hover:bg-surface/10 rounded-md transition-all cursor-pointer"
+        <IconButton
+          size="md"
           onclick={toggleReveal}
-          aria-label={revealed ? "Hide" : "Show"}
+          label={revealed ? $_("actions.hide") : $_("actions.show")}
         >
           {#if revealed}
             <IconEyeOff size={18} />
           {:else}
             <IconEye size={18} />
           {/if}
-        </button>
+        </IconButton>
 
-        <button
-          class="p-2 text-text-muted hover:text-text-primary hover:bg-surface/10 rounded-md transition-all cursor-pointer {copyTimer !==
-          null
-            ? 'text-accent-light'
-            : ''}"
+        <IconButton
+          size="md"
           onclick={copyPin}
-          aria-label="Copy PIN"
+          active={copyTimer !== null}
+          label={$_("actions.copy")}
         >
           <div class="w-4 h-4 flex items-center justify-center">
             {#if copyTimer !== null}
@@ -281,7 +271,7 @@
               <IconCopy size={18} />
             {/if}
           </div>
-        </button>
+        </IconButton>
       </div>
     </div>
   </div>

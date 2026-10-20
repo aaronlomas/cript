@@ -1,6 +1,7 @@
 <script lang="ts">
   import { IconAlertTriangle } from "@tabler/icons-svelte";
   import { _ } from "svelte-i18n";
+  import Button from "../../core/primitives/Button.svelte";
 
   // ── Props (Svelte 5 runes) ──────────────────────────────────────────────────
   let {
@@ -40,7 +41,7 @@
   tabindex="-1"
 >
   <div
-    class="w-full max-w-md bg-surface/4 backdrop-blur-2xl border border-surface/10 rounded-2xl p-8 shadow-2xl relative"
+    class="w-full max-w-md bg-panel border border-surface/10 rounded-2xl p-4 shadow-2xl relative"
   >
     <div class="flex items-center gap-3 mb-4">
       <div
@@ -58,23 +59,20 @@
     </div>
 
     <div class="flex gap-3 justify-end border-t border-surface/8 pt-4">
-      <button
-        type="button"
-        class="inline-flex items-center justify-center h-10 px-5 rounded-sm text-sm font-bold cursor-pointer transition-all border border-surface/10 bg-surface/5 text-text-secondary hover:bg-surface/10 hover:text-text-primary min-w-24"
+      <Button
+        variant="secondary"
         onclick={() => oncancel?.()}
+        class="min-w-24"
       >
         {cancelText}
-      </button>
-      <button
-        type="button"
-        class="inline-flex items-center justify-center h-10 px-5 rounded-sm text-sm font-bold cursor-pointer transition-all border-none text-white min-w-24 shadow-sm hover:-translate-y-px active:scale-95
-               {type === 'danger'
-          ? 'bg-danger shadow-danger/30 hover:brightness-110'
-          : 'bg-accent shadow-accent/20 hover:brightness-110'}"
+      </Button>
+      <Button
+        variant={type === "danger" ? "danger" : "primary"}
         onclick={() => onconfirm?.()}
+        class="min-w-24"
       >
         {confirmText}
-      </button>
+      </Button>
     </div>
   </div>
 </div>

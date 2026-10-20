@@ -34,7 +34,7 @@
 </script>
 
 <div
-  class="flex flex-col h-fit transition-all bg-panel/30 backdrop-blur-2xl rounded-2xl border {className}"
+  class="flex flex-col h-fit transition-all bg-panel/40 rounded-2xl border {className}"
   {style}
   data-card-id={dataCardId}
 >

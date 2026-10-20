@@ -5,6 +5,7 @@
   import Modal from "../../core/primitives/Modal.svelte";
   import Button from "../../core/primitives/Button.svelte";
   import Input from "../../core/primitives/Input.svelte";
+  import IconButton from "../../core/primitives/IconButton.svelte";
 
   let {
     onconfirm,
@@ -52,43 +53,35 @@
     </div>
 
     <form onsubmit={handleSubmit} class="space-y-4" id="verify-master-form">
-      <div>
-        <Input
-          id="verify-master-pw"
-          type={showPassword ? "text" : "password"}
-          bind:value={password}
-          placeholder="••••••••••••"
-          required
-          autofocus
-          variant="triple"
-          label={$_("unlock_screen.master_password_label")}
-          class={error ? "border-danger focus-within:ring-danger focus-within:border-danger" : ""}
-        >
-          {#snippet icon()}
-            <IconLock size={18} class="text-text-muted" />
-          {/snippet}
+      <Input
+        id="verify-master-pw"
+        type={showPassword ? "text" : "password"}
+        bind:value={password}
+        placeholder="••••••••••••"
+        required
+        autofocus
+        variant="triple"
+        label={$_("unlock_screen.master_password_label")}
+        error={error}
+      >
+        {#snippet icon()}
+          <IconLock size={18} class="text-text-muted" />
+        {/snippet}
 
-          {#snippet action()}
-            <button
-              type="button"
-              class="text-text-muted hover:text-text-primary transition-colors flex items-center justify-center"
-              onclick={() => (showPassword = !showPassword)}
-              aria-label={showPassword ? $_("accounts.hide_field") : $_("accounts.show_field")}
-            >
-              {#if showPassword}
-                <IconEyeOff size={18} />
-              {:else}
-                <IconEye size={18} />
-              {/if}
-            </button>
-          {/snippet}
-        </Input>
-        {#if error}
-          <p class="text-xs text-danger font-medium animate-in fade-in slide-in-from-top-1 mt-2">
-            {error}
-          </p>
-        {/if}
-      </div>
+        {#snippet action()}
+          <IconButton
+            size="sm"
+            onclick={() => (showPassword = !showPassword)}
+            label={showPassword ? $_("actions.hide") : $_("actions.show")}
+          >
+            {#if showPassword}
+              <IconEyeOff size={18} />
+            {:else}
+              <IconEye size={18} />
+            {/if}
+          </IconButton>
+        {/snippet}
+      </Input>
     </form>
   </div>
 

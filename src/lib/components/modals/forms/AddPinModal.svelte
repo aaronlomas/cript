@@ -2,11 +2,13 @@
   import { addPin } from "$lib/utils/tauri";
   import { IconEye, IconEyeOff } from "@tabler/icons-svelte";
   import { _ } from "svelte-i18n";
-  import { focus } from "$lib/utils/actions";
   import { useForm } from "$lib/validation/useForm.svelte";
   import { pinSchema, type PinForm } from "$lib/validation/schemas";
   import Modal from "../../core/primitives/Modal.svelte";
   import Button from "../../core/primitives/Button.svelte";
+  import Input from "../../core/primitives/Input.svelte";
+  import Textarea from "../../core/primitives/Textarea.svelte";
+  import IconButton from "../../core/primitives/IconButton.svelte";
 
   let { onadded, onclose }: { onadded?: () => void; onclose?: () => void } =
     $props();
@@ -28,9 +30,9 @@
   );
 </script>
 
-<Modal 
-  show={true} 
-  onclose={onclose} 
+<Modal
+  show={true}
+  onclose={onclose}
   title={$_("pin_security.new_pin")}
 >
   <form
@@ -41,80 +43,52 @@
       form.handleSubmit();
     }}
   >
-    <!-- Name -->
-    <div class="flex flex-col gap-2">
-      <label for="pin-name" class="text-xs font-medium text-text-secondary"
-        >{$_("pin_security.name_label")}</label
-      >
-      <input
-        id="pin-name"
-        class="w-full px-4 py-2 bg-surface/5 border {form.errors.name
-          ? 'border-danger'
-          : 'border-surface/10'} rounded-lg text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 focus:bg-surface/8 transition-all"
-        bind:value={form.values.name}
-        placeholder={$_("pin_security.name_placeholder")}
-        autocomplete="off"
-        use:focus
-      />
-      {#if form.errors.name}
-        <span
-          class="text-xs text-danger animate-in fade-in slide-in-from-top-1"
-        >
-          {$_(`pin_security.${form.errors.name}`)}
-        </span>
-      {/if}
-    </div>
+    <Input
+      id="pin-name"
+      label={$_("pin_security.name_label")}
+      bind:value={form.values.name}
+      placeholder={$_("pin_security.name_placeholder")}
+      autocomplete="off"
+      autofocus
+      error={form.errors.name
+        ? $_(`pin_security.${form.errors.name}`)
+        : undefined}
+    />
 
-    <!-- PIN -->
-    <div class="flex flex-col gap-2">
-      <label for="pin-code" class="text-xs font-medium text-text-secondary"
-        >{$_("pin_security.pin_label")}</label
-      >
-      <div class="relative">
-        <input
-          id="pin-code"
-          class="w-full px-4 py-2 bg-surface/5 border {form.errors.pin
-            ? 'border-danger'
-            : 'border-surface/10'} rounded-lg text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 focus:bg-surface/8 transition-all pr-10"
-          type={showPin ? "text" : "password"}
-          bind:value={form.values.pin}
-          placeholder={$_("pin_security.pin_placeholder")}
-          autocomplete="new-password"
-        />
-        <button
-          type="button"
-          class="absolute right-2 top-1/2 -translate-y-1/2 bg-none border-none cursor-pointer p-1 text-text-muted hover:text-text-primary opacity-60 hover:opacity-100 transition-all flex items-center"
+    <Input
+      id="pin-code"
+      label={$_("pin_security.pin_label")}
+      variant="double"
+      type={showPin ? "text" : "password"}
+      bind:value={form.values.pin}
+      placeholder={$_("pin_security.pin_placeholder")}
+      autocomplete="new-password"
+      error={form.errors.pin
+        ? $_(`pin_security.${form.errors.pin}`)
+        : undefined}
+    >
+      {#snippet action()}
+        <IconButton
+          size="sm"
           onclick={() => (showPin = !showPin)}
+          label={showPin ? $_("actions.hide") : $_("actions.show")}
         >
           {#if showPin}
             <IconEyeOff size={18} />
           {:else}
             <IconEye size={18} />
           {/if}
-        </button>
-      </div>
-      {#if form.errors.pin}
-        <span
-          class="text-xs text-danger animate-in fade-in slide-in-from-top-1"
-        >
-          {$_(`pin_security.${form.errors.pin}`)}
-        </span>
-      {/if}
-    </div>
+        </IconButton>
+      {/snippet}
+    </Input>
 
-    <!-- Notes -->
-    <div class="flex flex-col gap-2">
-      <label for="pin-notes" class="text-xs font-medium text-text-secondary"
-        >{$_("pin_security.notes_label")}</label
-      >
-      <textarea
-        id="pin-notes"
-        class="w-full px-4 py-2.5 bg-surface/5 border border-surface/10 rounded-lg text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 focus:bg-surface/8 transition-all resize-vertical min-h-18"
-        bind:value={form.values.notes}
-        placeholder={$_("pin_security.notes_placeholder")}
-        rows="3"
-      ></textarea>
-    </div>
+    <Textarea
+      id="pin-notes"
+      label={$_("pin_security.notes_label")}
+      bind:value={form.values.notes}
+      placeholder={$_("pin_security.notes_placeholder")}
+      rows={3}
+    />
 
     {#if form.globalError}
       <p
@@ -129,9 +103,9 @@
     <Button variant="ghost" onclick={onclose}>
       {$_("actions.cancel")}
     </Button>
-    <Button 
-      type="submit" 
-      form="add-pin-form" 
+    <Button
+      type="submit"
+      form="add-pin-form"
       disabled={form.loading}
       class="min-w-24"
     >

@@ -1,29 +1,33 @@
 <script lang="ts">
   import { _ } from "svelte-i18n";
-  import { 
-    IconLock, 
-    IconEye, 
-    IconEyeOff, 
+  import {
+    IconLock,
+    IconEye,
+    IconEyeOff,
     IconDatabaseImport,
     IconCopy,
-    IconReplace
+    IconReplace,
   } from "@tabler/icons-svelte";
-  import { focus } from "$lib/utils/actions";
   import Modal from "../../core/primitives/Modal.svelte";
   import Button from "../../core/primitives/Button.svelte";
-  
+  import Input from "../../core/primitives/Input.svelte";
+  import IconButton from "../../core/primitives/IconButton.svelte";
+  import ChoiceCard from "../../core/primitives/ChoiceCard.svelte";
+
   import { open } from "@tauri-apps/plugin-dialog";
   import { invoke } from "@tauri-apps/api/core";
   import { toast } from "$lib/stores/toast.svelte";
   import { get } from "svelte/store";
-  
-  let { onconfirm, oncancel } = $props<{
-    onconfirm: (password: string, strategy: 'merge' | 'replace') => void;
+
+  interface Props {
+    onconfirm: (password: string, strategy: "merge" | "replace") => void;
     oncancel: () => void;
-  }>();
+  }
+
+  let { onconfirm, oncancel }: Props = $props();
 
   let password = $state("");
-  let strategy = $state<'merge' | 'replace'>('merge');
+  let strategy = $state<"merge" | "replace">("merge");
   let showPassword = $state(false);
   let error = $state("");
   let loading = $state(false);
@@ -33,23 +37,27 @@
     loading = true;
     try {
       const filePath = await open({
-        title: "Select Database",
+        title: t("import_pack.select_database"),
         filters: [
           { name: "Cript Vaults", extensions: ["crp", "db", "pack", "crp.pack"] },
         ],
       });
-      
+
       if (!filePath) return;
 
       if (filePath.endsWith(".pack") || filePath.endsWith(".crp.pack")) {
         // Secure Package Import
         try {
-          await invoke("import_secure_package", { 
-            srcPath: filePath, 
-            password: password, 
-            strategy: strategy 
+          await invoke("import_secure_package", {
+            srcPath: filePath,
+            password: password,
+            strategy: strategy,
           });
-          toast.success(strategy === 'replace' ? t("import_pack.success_replace") : t("import_pack.success_merge"));
+          toast.success(
+            strategy === "replace"
+              ? t("import_pack.success_replace")
+              : t("import_pack.success_merge"),
+          );
           onconfirm(password, strategy);
         } catch (e: any) {
           console.error("Secure import failed:", e);
@@ -60,7 +68,7 @@
         // Legacy DB Import (SQLite file replacement)
         try {
           await invoke("import_db", { srcPath: filePath });
-          toast.success($_("sidebar.import_confirm_button") || "Base de datos importada");
+          toast.success(t("import_pack.success_db"));
           onconfirm(password, strategy);
         } catch (e: any) {
           console.error("Import failed:", e);
@@ -78,87 +86,72 @@
   function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
     if (password.length < 8) {
-      error = "The password must be at least 8 characters long.";
+      error = $_("import_pack.password_error");
       return;
     }
     handleImport();
   }
 </script>
 
-<Modal 
-  show={true} 
-  onclose={oncancel} 
+<Modal
+  show={true}
+  onclose={oncancel}
   title={$_("import_pack.title")}
 >
   <div class="space-y-6">
-
     <form onsubmit={handleSubmit} class="space-y-6" id="import-form">
       <!-- Strategy Selection -->
       <div class="space-y-3">
-        
         <div class="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            class="flex flex-col items-center gap-2 p-3 rounded-xl border transition-all text-center {strategy === 'merge' ? 'bg-accent/10 border-accent text-accent' : 'bg-surface/5 border-surface/10 text-text-muted hover:bg-surface/10'}"
-            onclick={() => strategy = 'merge'}
-          >
-            <IconCopy size={24} />
-            <div class="flex flex-col">
-              <span class="text-sm font-bold">{$_("import_pack.keep_both")}</span>
-              <span class="text-xs opacity-70">{$_("import_pack.keep_both_desc")}</span>
-            </div>
-          </button>
+          <ChoiceCard
+            title={$_("import_pack.keep_both")}
+            description={$_("import_pack.keep_both_desc")}
+            icon={IconCopy}
+            active={strategy === "merge"}
+            onclick={() => (strategy = "merge")}
+          />
 
-          <button
-            type="button"
-            class="flex flex-col items-center gap-2 p-3 rounded-xl border transition-all text-center {strategy === 'replace' ? 'bg-danger/10 border-danger text-danger' : 'bg-surface/5 border-surface/10 text-text-muted hover:bg-surface/10'}"
-            onclick={() => strategy = 'replace'}
-          >
-            <IconReplace size={24} />
-            <div class="flex flex-col">
-              <span class="text-sm font-bold">{$_("actions.replace")}</span>
-              <span class="text-xs opacity-70">{$_("import_pack.replace_desc")}</span>
-            </div>
-          </button>
+          <ChoiceCard
+            title={$_("actions.replace")}
+            description={$_("import_pack.replace_desc")}
+            icon={IconReplace}
+            tone="danger"
+            active={strategy === "replace"}
+            onclick={() => (strategy = "replace")}
+          />
         </div>
       </div>
 
       <!-- Password Field -->
-      <div class="space-y-2">
-        <label for="import-pw" class="text-xs font-bold text-text-muted uppercase tracking-wider">
-          {$_("import_pack.password_label")}
-        </label>
-        <div class="relative">
-          <div class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">
-            <IconLock size={18} />
-          </div>
-          <input
-            id="import-pw"
-            type={showPassword ? "text" : "password"}
-            bind:value={password}
-            placeholder="••••••••••••"
-            class="w-full bg-surface/5 border border-surface/10 rounded-lg pl-10 pr-12 py-3 text-text-primary placeholder:text-text-muted/30 focus:outline-none focus:border-accent transition-colors text-sm"
-            required
-            use:focus
-          />
-          <button
-            type="button"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors"
+      <Input
+        id="import-pw"
+        label={$_("import_pack.password_label")}
+        variant="triple"
+        type={showPassword ? "text" : "password"}
+        bind:value={password}
+        placeholder="••••••••••••"
+        required
+        autofocus
+        error={error ? $_("import_pack.password_error") : undefined}
+      >
+        {#snippet icon()}
+          <IconLock size={18} class="text-text-muted" />
+        {/snippet}
+
+        {#snippet action()}
+          <IconButton
+            size="sm"
             onclick={() => (showPassword = !showPassword)}
+            label={showPassword ? $_("actions.hide") : $_("actions.show")}
           >
             {#if showPassword}
               <IconEyeOff size={18} />
             {:else}
               <IconEye size={18} />
             {/if}
-          </button>
-        </div>
-        {#if error}
-          <p class="text-xs text-danger font-medium animate-in fade-in slide-in-from-top-1">
-            {$_("import_pack.password_error")}
-          </p>
-        {/if}
-      </div>
+          </IconButton>
+        {/snippet}
+      </Input>
     </form>
   </div>
 

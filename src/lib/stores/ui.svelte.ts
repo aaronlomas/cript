@@ -16,6 +16,8 @@ export class UIState {
   activeGroup = $state<string | null>(null);
   /** When true, all capsules are locked and cannot be expanded. */
   capsuleLocked = $state(false);
+  /** Controls visibility of the CLI/Log panel at the bottom. */
+  cliOpen = $state(false);
 }
 
 export const uiState = new UIState();

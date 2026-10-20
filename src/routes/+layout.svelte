@@ -11,6 +11,7 @@
   import Cli from "$lib/components/features/cli/log/Log.svelte";
   import { startPersistentLogListener } from "$lib/utils/logEvents";
   import { getCurrentWindow } from "@tauri-apps/api/window";
+  import { modal } from "$lib/stores/modal.svelte";
 
   let { children } = $props();
   let initialized = $state(false);
@@ -33,49 +34,57 @@
 </script>
 
 {#if initialized && !$isLoading}
-  <!-- Resize handles -->
+  <!-- Resize handles — hidden when a modal is open so they don't intercept mouse events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="fixed top-0 left-0 w-full h-1 cursor-n-resize z-100"
+    class="fixed top-0 left-0 w-full h-1 cursor-n-resize"
+    class:pointer-events-none={modal.current !== null}
     onmousedown={() => appWindow.startResizeDragging("North")}
   ></div>
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="fixed bottom-0 left-0 w-full h-1 cursor-s-resize z-100"
+    class="fixed bottom-0 left-0 w-full h-1 cursor-s-resize"
+    class:pointer-events-none={modal.current !== null}
     onmousedown={() => appWindow.startResizeDragging("South")}
   ></div>
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="fixed top-0 left-0 w-1 h-full cursor-w-resize z-100"
+    class="fixed top-0 left-0 w-1 h-full cursor-w-resize"
+    class:pointer-events-none={modal.current !== null}
     onmousedown={() => appWindow.startResizeDragging("West")}
   ></div>
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="fixed top-0 right-0 w-1 h-full cursor-e-resize z-100"
+    class="fixed top-0 right-0 w-1 h-full cursor-e-resize"
+    class:pointer-events-none={modal.current !== null}
     onmousedown={() => appWindow.startResizeDragging("East")}
   ></div>
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="fixed top-0 left-0 w-2 h-2 cursor-nw-resize z-101"
+    class="fixed top-0 left-0 w-2 h-2 cursor-nw-resize"
+    class:pointer-events-none={modal.current !== null}
     onmousedown={() => appWindow.startResizeDragging("NorthWest")}
   ></div>
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="fixed top-0 right-0 w-2 h-2 cursor-ne-resize z-101"
+    class="fixed top-0 right-0 w-2 h-2 cursor-ne-resize"
+    class:pointer-events-none={modal.current !== null}
     onmousedown={() => appWindow.startResizeDragging("NorthEast")}
   ></div>
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="fixed bottom-0 left-0 w-2 h-2 cursor-sw-resize z-101"
+    class="fixed bottom-0 left-0 w-2 h-2 cursor-sw-resize"
+    class:pointer-events-none={modal.current !== null}
     onmousedown={() => appWindow.startResizeDragging("SouthWest")}
   ></div>
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="fixed bottom-0 right-0 w-2 h-2 cursor-se-resize z-101"
+    class="fixed bottom-0 right-0 w-2 h-2 cursor-se-resize"
+    class:pointer-events-none={modal.current !== null}
     onmousedown={() => appWindow.startResizeDragging("SouthEast")}
   ></div>
 
-  <div class="flex flex-col h-screen overflow-hidden">
+  <div class="flex flex-col h-screen overflow-hidden" class:pointer-events-none={modal.current !== null}>
     <TitleBar />
     <div class="flex-1 overflow-hidden">
       {@render children?.()}

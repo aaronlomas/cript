@@ -1,7 +1,12 @@
 <script lang="ts">
+  /**
+   * @component Input
+   * @description Text field with support for labels, errors and optional leading/trailing actions.
+   */
   import type { HTMLInputAttributes } from "svelte/elements";
   import type { Snippet } from "svelte";
-  import { COMPONENTS, COLORS } from "$lib/config/design-tokens";
+  import { FIELD_STYLES } from "$lib/config/ui-styles";
+  import Field from "./Field.svelte";
 
   interface Props extends HTMLInputAttributes {
     label?: string;
@@ -9,10 +14,14 @@
     value?: string;
     /** Input structure type */
     variant?: "simple" | "double" | "triple";
-    /** Initial icon (Required only in 'triple') */
+    /** Leading icon (required only in 'triple') */
     icon?: Snippet;
-    /**Show and hide icon (Required in 'double' and 'triple') */
+    /** Trailing action icon (required in 'double' and 'triple') */
     action?: Snippet;
+    /** Extra classes for the inner <input> element */
+    inputClass?: string;
+    /** Bound reference to the inner <input> element */
+    inputRef?: HTMLInputElement;
   }
 
   let {
@@ -22,12 +31,14 @@
     variant = "simple",
     icon,
     action,
+    inputClass = "",
+    inputRef = $bindable(),
     class: className = "",
     id = crypto.randomUUID(),
     ...rest
   }: Props = $props();
 
-  // Layout: Mapping based on the variant chosen
+  // Layout: mapping based on the chosen variant
   const gridLayouts = {
     simple: "grid-cols-1",
     double: "grid-cols-[1fr_auto]",
@@ -35,24 +46,11 @@
   };
 </script>
 
-<div class="flex flex-col gap-1 w-full">
-  {#if label}
-    <label for={id} class="text-sm font-medium {COLORS.text.secondary}">
-      {label}
-    </label>
-  {/if}
-
-  <!-- Base Container -->
+<Field {label} {error} for={id}>
   <div
-    class="
-      {COMPONENTS.input} 
-      grid items-center gap-2 px-3
-      {gridLayouts[variant]}
-      {error
-      ? 'border-danger focus-within:ring-danger focus-within:border-danger'
-      : ''} 
-      {className}
-    "
+    class="{FIELD_STYLES.box} {gridLayouts[variant]} {error
+      ? 'border-danger focus-within:border-danger'
+      : ''} {className}"
   >
     {#if variant === "triple" && icon}
       <div class="flex items-center justify-center shrink-0">
@@ -60,23 +58,18 @@
       </div>
     {/if}
 
-    <!-- 2. Simple input, to collect only informational data -->
     <input
       {id}
+      bind:this={inputRef}
       bind:value
-      class="w-full bg-transparent border-none outline-none focus:ring-0 focus:outline-none"
+      class="{FIELD_STYLES.input} {inputClass}"
       {...rest}
     />
 
-    <!-- Action icon (Variants 'double' and 'triple') -->
     {#if (variant === "double" || variant === "triple") && action}
       <div class="flex items-center justify-center shrink-0">
         {@render action()}
       </div>
     {/if}
   </div>
-
-  {#if error}
-    <span class="text-xs text-danger">{error}</span>
-  {/if}
-</div>
+</Field>

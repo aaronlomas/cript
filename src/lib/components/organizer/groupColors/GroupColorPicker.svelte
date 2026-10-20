@@ -1,11 +1,14 @@
 <script lang="ts">
   import { IconPalette, IconBan, IconPlus } from "@tabler/icons-svelte";
   import { _ } from "svelte-i18n";
+  import IconButton from "$lib/components/core/primitives/IconButton.svelte";
 
-  let { selectedColor = $bindable(), onselect } = $props<{
+  interface Props {
     selectedColor: string | null;
     onselect?: (color: string | null) => void;
-  }>();
+  }
+
+  let { selectedColor = $bindable(), onselect }: Props = $props();
 
   let isOpen = $state(false);
 
@@ -58,33 +61,34 @@
   }
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
 <div class="relative flex items-center" use:clickOutside>
-  <button
-    class="text-text-muted cursor-pointer hover:text-accent transition-colors flex items-center justify-center rounded-md"
+  <IconButton
+    size="sm"
+    variant="accent"
     onclick={() => (isOpen = !isOpen)}
-    aria-label={$_("groups.pick_color")}
+    label={$_("groups.pick_color")}
     title={$_("groups.pick_color")}
   >
     {#if selectedColor}
       <div
-        class="w-3 h-3 rounded-full"
+        class="size-3 rounded-full"
         style="background-color: {selectedColor};"
       ></div>
     {:else}
       <IconPalette size={14} />
     {/if}
-  </button>
+  </IconButton>
 
   {#if isOpen}
     <!-- Color picker popover -->
     <div
-      class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 p-2 bg-panel/95 backdrop-blur-md border border-surface/20 rounded-lg shadow-xl shadow-black/20 z-20 flex flex-wrap gap-2 w-max max-w-[140px] justify-center"
+      class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 p-2 bg-panel backdrop-blur-md border border-surface/20 rounded-lg shadow-xl shadow-black/20 z-20 flex flex-wrap gap-2 w-max max-w-[140px] justify-center"
     >
       {#each colors as color}
         <button
-          class="w-5 h-5 rounded-full cursor-pointer hover:scale-125 transition-transform border border-black/20"
+          class="size-5 rounded-full cursor-pointer hover:scale-125 transition-transform border border-black/20"
           style="background-color: {color}; {selectedColor === color
             ? 'outline: 2px solid white; outline-offset: 1px;'
             : ''}"
@@ -95,7 +99,7 @@
 
       {#if customColor}
         <button
-          class="w-5 h-5 rounded-full cursor-pointer hover:scale-125 transition-transform border border-black/20"
+          class="size-5 rounded-full cursor-pointer hover:scale-125 transition-transform border border-black/20"
           style="background-color: {customColor}; {selectedColor === customColor
             ? 'outline: 2px solid white; outline-offset: 1px;'
             : ''}"
@@ -107,7 +111,7 @@
 
       <!-- Custom color input -->
       <label
-        class="w-5 h-5 rounded-full cursor-pointer hover:scale-110 transition-colors border border-surface/40 bg-surface/10 flex items-center justify-center text-text-muted hover:text-white relative overflow-hidden"
+        class="size-5 rounded-full cursor-pointer hover:scale-110 transition-colors border border-surface/40 bg-surface/10 flex items-center justify-center text-text-muted hover:text-white relative overflow-hidden"
         title={$_("groups.create_color")}
       >
         <IconPlus size={12} />
@@ -124,7 +128,7 @@
 
       <!-- None option -->
       <button
-        class="w-5 h-5 rounded-full cursor-pointer hover:scale-110 transition-colors border border-surface/40 bg-surface/10 flex items-center justify-center text-text-muted hover:text-white"
+        class="size-5 rounded-full cursor-pointer hover:scale-110 transition-colors border border-surface/40 bg-surface/10 flex items-center justify-center text-text-muted hover:text-white"
         onclick={() => selectColor(null)}
         title={$_("groups.no_color")}
       >

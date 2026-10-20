@@ -65,10 +65,28 @@
   let isResizing = $state(false);
   let isCollapsed = $derived(uiState.sidebarWidth <= 72);
 
+  /**
+   * Tailwind classes for a sidebar navigation item.
+   * Keeps the active/collapsed/danger states in one place.
+   */
+  function navItemClasses(active: boolean, danger = false): string {
+    return [
+      "flex items-center gap-3.5 px-4 py-3 border rounded-lg bg-transparent cursor-pointer font-medium text-sm transition-all whitespace-nowrap overflow-hidden w-full text-left",
+      danger
+        ? "text-text-muted hover:bg-danger/10 hover:text-text-primary"
+        : "text-text-muted hover:bg-[var(--color-surface-dim)] hover:text-accent",
+      active ? "text-accent border-accent" : "border-transparent",
+      isCollapsed
+        ? "justify-center border-transparent hover:border-transparent"
+        : "",
+    ].join(" ");
+  }
+
   function startResize(e: PointerEvent) {
     e.preventDefault();
     isResizing = true;
-    document.body.classList.add('is-resizing');
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
     const target = e.target as HTMLElement;
     target.setPointerCapture(e.pointerId);
   }
@@ -92,7 +110,8 @@
   function stopResize(e: PointerEvent) {
     if (isResizing) {
       isResizing = false;
-      document.body.classList.remove('is-resizing');
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
       const target = e.target as HTMLElement;
       target.releasePointerCapture(e.pointerId);
     }
@@ -100,7 +119,7 @@
 </script>
 
 <aside
-  class="h-screen bg-panel/30 border-r border-surface/8 transition-colors overflow-hidden backdrop-blur-2xl flex flex-col px-2 gap-4 relative select-none"
+  class="relative h-full bg-panel/60 transition-colors border-r overflow-hidden flex flex-col gap-4 select-none {isResizing ? 'border-accent' : 'border-surface/8'}"
   style="
     width: {uiState.sidebarWidth}px; 
     min-width: {uiState.sidebarWidth}px; 
@@ -110,7 +129,7 @@
 >
 
   <!-- Brand -->
-  <div class="flex items-center gap-2 py-4 border-b border-surface/8 overflow-hidden whitespace-nowrap">
+  <div class="flex items-center p-2 overflow-hidden whitespace-nowrap {isCollapsed ? 'justify-center gap-0' : 'gap-2'}">
     <div class="text-2xl shrink-0 w-10 h-10 flex items-center justify-center bg-transparent rounded-sm">
       <Logo size={32} class="text-text-primary" />
     </div>
@@ -123,11 +142,11 @@
   </div>
 
   <!-- Nav items -->
-  <nav class="flex flex-col gap-1">
+  <nav class="flex flex-col gap-1 p-2">
     {#each navItems as item}
       {@const Icon = item.icon}
       <button
-        class="nav-item-btn {uiState.activeView === item.id ? 'active' : ''}"
+        class={navItemClasses(uiState.activeView === item.id)}
         onclick={item.action ?? undefined}
       >
         <div class="shrink-0 w-5 flex justify-center">
@@ -140,7 +159,7 @@
     {/each}
     <!-- Logout button -->
     <button
-      class="nav-item-btn hover:bg-danger/10 hover:text-text-primary mt-auto mb-4"
+      class="{navItemClasses(false, true)} mt-auto mb-4"
       onclick={logout}
     >
       <div class="shrink-0 w-5 flex justify-center">
@@ -154,7 +173,7 @@
 
   <!-- Resize Handle -->
   <div
-    class="absolute top-0 right-0 w-2 h-full cursor-col-resize hover:bg-primary/20 transition-colors z-10"
+    class="absolute top-0 right-0 w-2 h-full cursor-col-resize hover:bg-primary/20 transition-colors"
     onpointerdown={startResize}
     onpointermove={doResize}
     onpointerup={stopResize}
@@ -163,10 +182,3 @@
     role="separator"
   ></div>
 </aside>
-
-<style>
-  :global(body.is-resizing *) {
-    cursor: col-resize !important;
-    user-select: none !important;
-  }
-</style>

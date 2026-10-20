@@ -48,7 +48,7 @@
 </script>
 
 <div
-  class="h-9 flex justify-between items-center bg-panel/30 backdrop-blur-xl border-b border-surface/8 select-none w-full shrink-0 z-50 cursor-default"
+  class="relative h-9 flex justify-between items-center bg-panel/30 backdrop-blur-xl border-b border-surface/8 select-none w-full shrink-0 cursor-default"
   role="none"
 >
   <div

@@ -35,7 +35,7 @@
     tabindex="0"
     aria-multiline="true"
     aria-label={$_("board.placeholder")}
-    class="editor-pizarra w-full h-full min-h-100 max-h-0 p-8 bg-transparent border-none outline-none text-text-primary transition-all focus:ring-0 leading-relaxed overflow-y-auto"
+    class="editor-pizarra w-full h-full min-h-100 max-h-0 p-8 bg-transparent border-none outline-none text-text-primary text-[14pt] transition-all focus:ring-0 leading-relaxed overflow-y-auto"
     placeholder={$_("board.placeholder")}
     onkeyup={() => store.updateState()}
     onmouseup={() => store.updateState()}
@@ -46,9 +46,8 @@
 </div>
 
 <style>
-  .editor-pizarra {
-    font-size: 14pt;
-  }
+  /* Contenteditable placeholder and rich-text list styles cannot be expressed
+     cleanly with Tailwind utilities, so they stay as local component CSS. */
   .editor-pizarra:empty:before {
     content: attr(placeholder);
     color: #666; /* Fallback */

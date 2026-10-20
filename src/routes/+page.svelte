@@ -53,9 +53,9 @@
 
 
 {#if sessionState.isUnlocked}
-  <div class="app-layout">
+  <div class="flex h-full w-full overflow-hidden">
     <Sidebar />
-    <main class="main-content flex-1 min-w-0 overflow-hidden">
+    <main class="flex-1 min-w-0 overflow-hidden px-4 py-5 transition-[padding-left] duration-200">
       <MainView />
     </main>
   </div>

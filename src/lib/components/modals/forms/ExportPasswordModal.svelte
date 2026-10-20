@@ -1,21 +1,24 @@
 <script lang="ts">
   import { _ } from "svelte-i18n";
-  import { IconLock, IconEye, IconEyeOff, IconDownload} from "@tabler/icons-svelte";
-  import { focus } from "$lib/utils/actions";
+  import { IconLock, IconEye, IconEyeOff, IconDownload } from "@tabler/icons-svelte";
   import Modal from "../../core/primitives/Modal.svelte";
   import Button from "../../core/primitives/Button.svelte";
-  
+  import Input from "../../core/primitives/Input.svelte";
+  import IconButton from "../../core/primitives/IconButton.svelte";
+
   import { invoke } from "@tauri-apps/api/core";
   import { save } from "@tauri-apps/plugin-dialog";
   import { toast } from "$lib/stores/toast.svelte";
   import { get } from "svelte/store";
 
-  let { onconfirm, oncancel, customWarning, customTitle } = $props<{
+  interface Props {
     onconfirm: (password: string) => void;
     oncancel: () => void;
     customWarning?: string;
     customTitle?: string;
-  }>();
+  }
+
+  let { onconfirm, oncancel, customWarning, customTitle }: Props = $props();
 
   let password = $state("");
   let showPassword = $state(false);
@@ -62,9 +65,9 @@
   }
 </script>
 
-<Modal 
-  show={true} 
-  onclose={oncancel} 
+<Modal
+  show={true}
+  onclose={oncancel}
   title={customTitle || $_("export_pack.title")}
 >
   <div class="space-y-6">
@@ -75,41 +78,35 @@
     </div>
 
     <form onsubmit={handleSubmit} class="space-y-4" id="export-form">
-      <div class="space-y-2">
-        <label for="export-pw" class="text-xs font-bold text-text-muted uppercase tracking-wider">
-          {$_("export_pack.password_label")}
-        </label>
-        <div class="relative">
-          <div class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">
-            <IconLock size={18} />
-          </div>
-          <input
-            id="export-pw"
-            type={showPassword ? "text" : "password"}
-            bind:value={password}
-            placeholder="••••••••••••"
-            class="w-full bg-surface/5 border border-surface/10 rounded-lg pl-10 pr-12 py-3 text-text-primary placeholder:text-text-muted/30 focus:outline-none focus:border-accent transition-colors text-sm"
-            required
-            use:focus
-          />
-          <button
-            type="button"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors"
+      <Input
+        id="export-pw"
+        label={$_("export_pack.password_label")}
+        variant="triple"
+        type={showPassword ? "text" : "password"}
+        bind:value={password}
+        placeholder="••••••••••••"
+        required
+        autofocus
+        error={error}
+      >
+        {#snippet icon()}
+          <IconLock size={18} class="text-text-muted" />
+        {/snippet}
+
+        {#snippet action()}
+          <IconButton
+            size="sm"
             onclick={() => (showPassword = !showPassword)}
+            label={showPassword ? $_("actions.hide") : $_("actions.show")}
           >
             {#if showPassword}
               <IconEyeOff size={18} />
             {:else}
               <IconEye size={18} />
             {/if}
-          </button>
-        </div>
-        {#if error}
-          <p class="text-xs text-danger font-medium animate-in fade-in slide-in-from-top-1">
-            {error}
-          </p>
-        {/if}
-      </div>
+          </IconButton>
+        {/snippet}
+      </Input>
     </form>
   </div>
 

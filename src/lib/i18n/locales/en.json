@@ -39,7 +39,6 @@
       "opening": "Opening...",
       "loading": "Loading...",
       "processing": "Processing...",
-      "clearing": "Clearing...",
       "generating": "Generating..."
     }
   },
@@ -49,6 +48,7 @@
     "export_db": "Export DB",
     "settings": "Settings",
     "logout": "Logout",
+    "terminal": "Terminal",
     "collapse": "Collapse",
     "my_credentials": "YOUR GUARDIAN",
     "documents": "Notes",
@@ -94,6 +94,8 @@
     "recovery_code_placeholder": "ABCD-1234-EFGH",
     "notes_label": "Notes (optional)",
     "notes_placeholder": "Additional information…",
+    "generating": "Generating…",
+    "generate_error": "Error generating password",
     "regenerate_tooltip": "Regenerate",
     "length_label": "Length",
     "symbols_label": "Symbols",
@@ -189,9 +191,11 @@
     "keep_both_desc": "Merge data",
     "replace_desc": "Clean and overwrite",
     "password_label": "Package password",
-    "password_error": "Password required",
+    "password_error": "Password must be at least 8 characters long.",
+    "select_database": "Select database",
     "success_replace": "Vault replaced successfully",
-    "success_merge": "Vault imported and merged successfully"
+    "success_merge": "Vault imported and merged successfully",
+    "success_db": "Database imported successfully"
   },
   "import_view": {
     "subtitle": "Select the type of import.",
@@ -207,14 +211,14 @@
   "export_pack": {
     "title": "Export package",
     "password_label": "Package password",
-    "password_error": "Password required",
+    "password_error": "Password must be at least 8 characters long.",
     "warning": "Data will be encrypted for security, make sure you remember the password.",
     "success": "Package exported successfully to:\n{path}",
     "error": "Error generating package"
   },
   "settings": {
     "title": "Settings",
-    "subtitle": "Customize your experience in Cript",
+    "subtitle": "Customize your experience",
     "done_btn": "Understood",
     "tabs": {
       "theme": "Theme",
@@ -268,7 +272,7 @@
     },
     "theme": {
       "appearance": "Appearance",
-      "appearance_desc": "Select the visual mode for the interface. Cript uses a high-security design language with signature violet accents.",
+      "appearance_desc": "Select the visual mode for the interface.",
       "mode_light": "Light",
       "mode_light_desc": "Bright backgrounds and high-contrast text for daylight environments.",
       "mode_dark": "Dark",
@@ -346,12 +350,12 @@
   },
   "about_view": {
     "title": "Why trust Cript?",
-    "subtitle": "Transparency, open source and security through isolation.",
-    "opensource_title": "Open Source",
-    "opensource_desc": "Cript is an open-source project. This means anyone can review the code to ensure there are no backdoors or hidden telemetry.",
-    "local_title": "Total isolation",
-    "local_desc": "Your data never leaves your device and the security engine resides in a separate process. This isolation architecture ensures your secrets are shielded from external attacks and common web interface vulnerabilities.",
-    "encryption_title": "Strong encryption",
+    "subtitle": "Transparency, total control and security through isolation.",
+    "opensource_title": "Transparency",
+    "opensource_desc": "Cript provides full transparency to its users. It comes from an active repository and is completely open source to demonstrate its total honesty.",
+    "local_title": "Convenience",
+    "local_desc": "Cript was born out of the need to be able to manage our secrets autonomously, without servers or external services. Cript is simply part of your private life.",
+    "encryption_title": "Strong Encryption",
     "encryption_desc": "Your entire vault is protected using advanced encryption standards.",
     "version_label": "Version",
     "core_label": "Cript Core",
@@ -362,7 +366,7 @@
     "releases": "Releases",
     "security_link": "Security policy",
     "privacy_link": "Privacy policy",
-    "update_info": "To update this program, you must download the latest version from {link}"
+    "update_info": "For more information and updates, visit {link}"
   },
   "groups": {
     "all": "All",
@@ -374,6 +378,7 @@
     "remove_from_group": "Remove from group",
     "delete": "Delete group",
     "confirm_rename": "Confirm name",
+    "confirm_new_group": "Confirm group",
     "none": "No group",
     "pick_a_group": "Choose a group for this credential",
     "modal_title": "Assign to group",

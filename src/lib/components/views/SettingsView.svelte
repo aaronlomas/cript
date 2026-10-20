@@ -1,8 +1,8 @@
 <script lang="ts">
   /**
    * @component SettingsView
-   * @description Main application settings view. 
-   * Organize options into panels (Theme, Language, Security, Performance, etc.) 
+   * @description Main application settings view.
+   * Organize options into panels (Theme, Language, Security, Performance, etc.)
    * and handles side navigation.
    */
   import { themeStore } from "$lib/stores/theme.svelte";
@@ -15,13 +15,13 @@
     IconShieldCheck,
     IconArrowLeft,
     IconRefresh,
-    IconInfoCircle
+    IconInfoCircle,
   } from "@tabler/icons-svelte";
   import { _ } from "svelte-i18n";
   import { changeLanguage, t } from "$lib/i18n";
-  
+
   import SettingsNav from "../features/settings/SettingsNav.svelte";
-  
+
   // Panels
   import ThemePanel from "../features/settings/panels/ThemePanel.svelte";
   import LanguagePanel from "../features/settings/panels/LanguagePanel.svelte";
@@ -40,8 +40,16 @@
   const sections = $derived([
     { id: "theme", label: $_("settings.tabs.theme"), icon: IconPalette },
     { id: "language", label: $_("settings.tabs.language"), icon: IconLanguage },
-    { id: "security", label: $_("settings.tabs.security"), icon: IconShieldCheck },
-    { id: "performance", label: $_("settings.tabs.performance"), icon: IconRocket },
+    {
+      id: "security",
+      label: $_("settings.tabs.security"),
+      icon: IconShieldCheck,
+    },
+    {
+      id: "performance",
+      label: $_("settings.tabs.performance"),
+      icon: IconRocket,
+    },
     { id: "about", label: t("settings.tabs.system"), icon: IconInfoCircle },
   ]);
 
@@ -50,15 +58,13 @@
     language: LanguagePanel,
     security: SecurityPanel,
     performance: PerformancePanel,
-    about: AboutPanel
+    about: AboutPanel,
   };
 
   const ActivePanel = $derived(panelMap[activeSection]);
 </script>
 
-<div
-  class=" h-full grid grid-rows-[auto_auto_1fr]"
->
+<div class="h-full min-h-0 grid grid-rows-[auto_auto_1fr]">
   <!-- HEADER -->
   <header class="flex items-center justify-between gap-4 shrink-0 mb-4">
     <div class="flex gap-x-4 items-center">
@@ -91,18 +97,22 @@
   </header>
 
   <!-- OPTIONS -->
-  <div class="flex border border-surface/8 min-w-0 overflow-y-auto">
+  <div
+    class="flex border border-surface/8 min-w-0 overflow-x-auto overflow-y-hidden"
+  >
     <!-- Sidebar Navigation -->
     <SettingsNav {sections} bind:activeSection />
   </div>
 
   <!-- CONTENT AREA -->
   <main
-    class="bg-surface/4 w-full h-full p-4 overflow-y-auto"
+    class="bg-surface/4 w-full p-4 overflow-y-auto min-h-0 flex-1 scrollbar-gutter"
   >
-    <div class="max-w-2xl mx-auto h-full">
+    <div class="max-w-2xl mx-auto pb-8">
       {#key activeSection}
-        <div class="grid gap-4 animate-in fade-in slide-in-from-right-4 duration-300">
+        <div
+          class="grid gap-4 animate-in fade-in slide-in-from-right-4 duration-300"
+        >
           {#if ActivePanel}
             <ActivePanel />
           {/if}
@@ -111,9 +121,3 @@
     </div>
   </main>
 </div>
-
-<style>
-  main {
-    scrollbar-gutter: stable;
-  }
-</style>

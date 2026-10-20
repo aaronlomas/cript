@@ -6,8 +6,21 @@
    */
   import { _ } from "svelte-i18n";
   import { IconEye, IconEyeOff, IconCopy } from "@tabler/icons-svelte";
+  import IconButton from "$lib/components/core/primitives/IconButton.svelte";
 
   // Props
+  interface Props {
+    label: string;
+    value: string;
+    isSecret?: boolean;
+    revealed?: boolean;
+    countdown?: number | null;
+    showRevealButton?: boolean;
+    placeholder?: string;
+    oncopy: () => void;
+    ontogglereveal?: () => void;
+  }
+
   let {
     label,
     value,
@@ -18,17 +31,7 @@
     placeholder = "••••••••••••••••",
     oncopy,
     ontogglereveal,
-  } = $props<{
-    label: string;
-    value: string;
-    isSecret?: boolean;
-    revealed?: boolean;
-    countdown?: number | null;
-    showRevealButton?: boolean;
-    placeholder?: string;
-    oncopy: () => void;
-    ontogglereveal?: () => void;
-  }>();
+  }: Props = $props();
 </script>
 
 <div class="grid gap-2">
@@ -58,36 +61,36 @@
     <div class="flex items-center gap-0.5 shrink-0">
       <!-- Reveal Button (Optional, for secret fields) -->
       {#if isSecret && showRevealButton}
-        <button
-          class="p-2 text-text-muted hover:text-text-primary hover:bg-surface/10 rounded-md transition-all cursor-pointer"
+        <IconButton
+          size="md"
           onclick={ontogglereveal}
+          label={revealed ? $_("actions.hide") : $_("actions.show")}
         >
           {#if revealed}
             <IconEyeOff size={16} />
           {:else}
             <IconEye size={16} />
           {/if}
-        </button>
+        </IconButton>
       {/if}
 
       <!-- Copy to Clipboard Button -->
-      <button
-        class="p-2 text-text-muted hover:text-text-primary hover:bg-surface/10 rounded-md transition-all cursor-pointer
-               {countdown !== null ? 'text-accent-light' : ''}"
-        onclick={oncopy}
-        data-tooltip={countdown !== null
-          ? $_("actions.status.clearing", { values: { seconds: countdown } })
-          : $_("actions.copy")}
-      >
-        <div class="w-4 h-4 flex items-center justify-center">
-          {#if countdown !== null}
-            <!-- Visual Numeric Countdown -->
-            <span class="text-[10px] font-bold leading-none">{countdown}</span>
-          {:else}
-            <IconCopy size={16} />
-          {/if}
-        </div>
-      </button>
+
+        <IconButton
+          size="md"
+          onclick={oncopy}
+          active={countdown !== null}
+          label={$_("actions.copy")}
+        >
+          <div class="size-4 flex items-center justify-center">
+            {#if countdown !== null}
+              <!-- Visual Numeric Countdown -->
+              <span class="text-[10px] font-bold leading-none">{countdown}</span>
+            {:else}
+              <IconCopy size={16} />
+            {/if}
+          </div>
+        </IconButton>
     </div>
   </div>
 </div>

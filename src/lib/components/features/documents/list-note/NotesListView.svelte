@@ -53,7 +53,7 @@
   >
     {#each docState.documents as doc (doc.id)}
       <div
-        class="p-6 bg-surface/4 backdrop-blur-2xl rounded-2xl border border-surface/8 hover:border-accent/30 transition-all group shadow-xl relative overflow-hidden flex flex-col"
+        class="p-6 bg-surface/8 rounded-2xl border border-surface/8 hover:border-accent/30 transition-all group shadow-xl relative overflow-hidden flex flex-col"
       >
         <div class="flex items-center justify-between mb-5">
           <div

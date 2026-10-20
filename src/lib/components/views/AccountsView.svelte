@@ -17,6 +17,7 @@
   import { performanceStore } from "$lib/stores/performance.svelte";
   import { useAccounts } from "$lib/composables/useAccounts.svelte";
   import Button from "../core/primitives/Button.svelte";
+  import IconButton from "../core/primitives/IconButton.svelte";
   import AccountsFilter from "../features/accounts/AccountsFilter.svelte";
   import Group from "../organizer/Group.svelte";
   import AccountsList from "../features/accounts/AccountsList.svelte";
@@ -63,13 +64,15 @@
   <!-- Header -->
   <header class="flex items-center justify-between mb-7 gap-4">
     <div class="flex gap-x-4">
-      <button
-        class="p-2 bg-surface/5 hover:bg-surface/10 rounded-lg text-text-muted hover:text-text-primary transition-colors my-auto cursor-pointer"
+      <IconButton
+        size="md"
+        variant="default"
         onclick={() => (uiState.activeView = "general")}
-        aria-label="Back"
+        label={$_("actions.back")}
+        class="bg-surface/5 rounded-lg my-auto"
       >
         <IconArrowLeft size={20} />
-      </button>
+      </IconButton>
       <div>
         <h1
           class="text-xl font-bold bg-linear-to-br from-text-primary to-accent-light bg-clip-text text-transparent pointer-events-none"
@@ -106,12 +109,13 @@
         >
           {accountService.error}
         </p>
-        <button
-          class="text-sm text-accent underline cursor-pointer"
+        <Button
+          variant="link"
           onclick={() => accountService.refresh()}
+          class="underline"
         >
           {$_("actions.retry")}
-        </button>
+        </Button>
       </div>
     {:else if filtered.length === 0}
       <div

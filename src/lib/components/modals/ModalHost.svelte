@@ -2,7 +2,7 @@
   import { modal } from '$lib/stores/modal.svelte';
   import AddCredentialModal from './forms/AddCredentialModal.svelte';
   import ConfirmModal from './confirmation/ConfirmModal.svelte';
-  import AssignGroupModal from './forms/AssignGroupModal.svelte';
+  import AssignGroupModal from '../organizer/groupColors/AssignGroupModal.svelte';
   import ExportPasswordModal from './forms/ExportPasswordModal.svelte';
   import ImportPackageModal from './forms/ImportPackageModal.svelte';
   import AddPinModal from './forms/AddPinModal.svelte';

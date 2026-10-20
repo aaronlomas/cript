@@ -3,8 +3,9 @@
   import { generatePassword } from "$lib/utils/tauri";
   import { _ } from "svelte-i18n";
   import { writeText } from "@tauri-apps/plugin-clipboard-manager";
+  import { IconRefresh } from "@tabler/icons-svelte";
   import Button from "../../core/primitives/Button.svelte";
-
+  import IconButton from "../../core/primitives/IconButton.svelte";
   let { onuse }: { onuse: (pw: string) => void } = $props();
 
   let genLength = $state(20);
@@ -21,7 +22,7 @@
       genPreview = await generatePassword(genLength, genSymbols);
     } catch (e) {
       console.error("Failed to generate password:", e);
-      genPreview = "Error generating password";
+      genPreview = $_("add_credential.generate_error");
     } finally {
       genLoading = false;
       genCopied = false;
@@ -80,15 +81,14 @@
     >
       {genLoading ? $_("add_credential.generating") : genPreview}
     </code>
-    <button
-      type="button"
-      class="p-1.5 text-text-muted hover:text-text-primary hover:bg-surface/7 rounded-md transition-all flex items-center justify-center"
-      onclick={refreshPreview}
-      data-tooltip={$_("add_credential.regenerate_tooltip")}
-      aria-label={$_("add_credential.regenerate_tooltip")}
-    >
-      ↻
-    </button>
+      <IconButton
+        size="sm"
+        variant="default"
+        onclick={refreshPreview}
+        label={$_("add_credential.regenerate_tooltip")}
+      >
+        <IconRefresh size={16} />
+      </IconButton>
   </div>
 
   <div class="flex flex-col gap-2.5">

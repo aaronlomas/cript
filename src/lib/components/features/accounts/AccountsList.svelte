@@ -35,7 +35,7 @@
   </div>
 
   <!-- Virtual scrolling list (single column) -->
-  <div class="virtual-list-wrapper">
+  <div class="h-[calc(100vh-260px)] min-h-[300px]">
     <VirtualList items={filtered} let:item itemHeight={220}>
       <div class="pb-4">
         <AccountCard

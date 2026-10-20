@@ -4,6 +4,9 @@
   import PasswordStrength from "./PasswordStrength.svelte";
   import PasswordGenerator from "./PasswordGenerator.svelte";
   import Input from "../../core/primitives/Input.svelte";
+  import Textarea from "../../core/primitives/Textarea.svelte";
+  import Button from "../../core/primitives/Button.svelte";
+  import IconButton from "../../core/primitives/IconButton.svelte";
 
   interface Props {
     site?: string;
@@ -20,7 +23,7 @@
     password = $bindable(""),
     recoveryCode = $bindable(""),
     notes = $bindable(""),
-    errors = {}
+    errors = {},
   }: Props = $props();
 
   let showPw = $state(false);
@@ -44,7 +47,9 @@
     bind:value={username}
     placeholder={$_("add_credential.user_placeholder")}
     autocomplete="off"
-    error={errors.username ? $_(`add_credential.${errors.username}`) : undefined}
+    error={errors.username
+      ? $_(`add_credential.${errors.username}`)
+      : undefined}
   />
 
   <!-- Password -->
@@ -53,28 +58,27 @@
       <label for="add-pw" class="text-sm font-medium text-text-secondary">
         {$_("add_credential.password_label")}
       </label>
-      <button
-        type="button"
-        class="bg-none border-none text-accent-light text-xs cursor-pointer transition-opacity hover:opacity-80"
+      <Button
+        variant="link"
+        class="text-xs"
         onclick={() => (showGenerator = !showGenerator)}
       >
         {showGenerator ? $_("actions.hide") : $_("actions.generate")}
-      </button>
+      </Button>
     </div>
 
     {#snippet eyeAction()}
-      <button
-        type="button"
-        class="bg-none border-none cursor-pointer text-text-muted hover:text-text-primary opacity-60 hover:opacity-100 transition-all flex items-center"
+      <IconButton
+        size="empty"
         onclick={() => (showPw = !showPw)}
-        aria-label={showPw ? "Hide password" : "Show password"}
+        label={showPw ? $_("actions.hide") : $_("actions.show")}
       >
         {#if showPw}
           <IconEyeOff size={18} />
         {:else}
           <IconEye size={18} />
         {/if}
-      </button>
+      </IconButton>
     {/snippet}
 
     <Input
@@ -83,15 +87,22 @@
       action={eyeAction}
       type={showPw ? "text" : "password"}
       bind:value={password}
-      placeholder={$_("add_credential.placeholder") || "•••••••••••••••"}
+      placeholder={$_("add_credential.placeholder")}
       autocomplete="new-password"
-      error={errors.password ? $_(`add_credential.${errors.password}`) : undefined}
+      error={errors.password
+        ? $_(`add_credential.${errors.password}`)
+        : undefined}
     />
 
     <PasswordStrength {password} />
 
     {#if showGenerator}
-      <PasswordGenerator onuse={(pw) => { password = pw; showGenerator = false; }} />
+      <PasswordGenerator
+        onuse={(pw) => {
+          password = pw;
+          showGenerator = false;
+        }}
+      />
     {/if}
   </div>
 
@@ -105,16 +116,11 @@
   />
 
   <!-- Notes -->
-  <div class="flex flex-col gap-2">
-    <label for="add-notes" class="text-sm font-medium text-text-secondary">
-      {$_("add_credential.notes_label")}
-    </label>
-    <textarea
-      id="add-notes"
-      class="flex min-h-20 w-full rounded-md border border-surface/10 bg-surface/4 px-3 py-2 text-sm text-text-primary ring-offset-bg-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-accent disabled:cursor-not-allowed disabled:opacity-50 resize-vertical"
-      bind:value={notes}
-      placeholder={$_("add_credential.notes_placeholder")}
-      rows="3"
-    ></textarea>
-  </div>
+  <Textarea
+    id="add-notes"
+    label={$_("add_credential.notes_label")}
+    bind:value={notes}
+    placeholder={$_("add_credential.notes_placeholder")}
+    rows={3}
+  />
 </div>

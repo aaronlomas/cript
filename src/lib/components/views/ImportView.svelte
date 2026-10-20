@@ -14,6 +14,7 @@
   import { addAccount, readExternalFile, getAccounts, deleteAccount } from "$lib/utils/tauri";
   import { parseCsv } from "$lib/utils/csvImporter";
   import Card from "$lib/components/core/primitives/Card.svelte";
+  import ChoiceCard from "$lib/components/core/primitives/ChoiceCard.svelte";
   import Modal from "$lib/components/core/primitives/Modal.svelte";
   import Button from "$lib/components/core/primitives/Button.svelte";
 
@@ -124,33 +125,22 @@
   >
     <div class="space-y-4">
       <div class="grid grid-cols-2 gap-2">
-        <button
-          type="button"
-          class="flex flex-col items-center gap-2 p-3 rounded-xl border transition-all text-center {strategy === 'merge'
-            ? 'bg-accent/10 border-accent text-accent'
-            : 'bg-surface/5 border-surface/10 text-text-muted hover:bg-surface/10'}"
+        <ChoiceCard
+          title={$_("import_pack.keep_both")}
+          description={$_("import_pack.keep_both_desc")}
+          icon={IconCopy}
+          active={strategy === "merge"}
           onclick={() => (strategy = "merge")}
-        >
-          <IconCopy size={24} />
-          <div class="flex flex-col">
-            <span class="text-sm font-bold">{$_("import_pack.keep_both")}</span>
-            <span class="text-xs opacity-70">{$_("import_pack.keep_both_desc")}</span>
-          </div>
-        </button>
+        />
 
-        <button
-          type="button"
-          class="flex flex-col items-center gap-2 p-3 rounded-xl border transition-all text-center {strategy === 'replace'
-            ? 'bg-danger/10 border-danger text-danger'
-            : 'bg-surface/5 border-surface/10 text-text-muted hover:bg-surface/10'}"
+        <ChoiceCard
+          title={$_("actions.replace")}
+          description={$_("import_pack.replace_desc")}
+          icon={IconReplace}
+          tone="danger"
+          active={strategy === "replace"}
           onclick={() => (strategy = "replace")}
-        >
-          <IconReplace size={24} />
-          <div class="flex flex-col">
-            <span class="text-sm font-bold">{$_("actions.replace")}</span>
-            <span class="text-xs opacity-70">{$_("import_pack.replace_desc")}</span>
-          </div>
-        </button>
+        />
       </div>
     </div>
 

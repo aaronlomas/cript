@@ -10,19 +10,21 @@
   import Input from "../../../../core/primitives/Input.svelte";
 
   // Props
+  interface Props {
+    setupData: { qr_png_b64: string; otpauth_url: string };
+    processing: boolean;
+    verificationCode: string;
+    onCancel: () => void;
+    onVerify: () => void;
+  }
+
   let {
     setupData,
     processing,
     verificationCode = $bindable(),
     onCancel,
     onVerify,
-  } = $props<{
-    setupData: { qr_png_b64: string; otpauth_url: string };
-    processing: boolean;
-    verificationCode: string;
-    onCancel: () => void;
-    onVerify: () => void;
-  }>();
+  }: Props = $props();
 
   function handleNumericInput(event: Event) {
     const input = event.currentTarget as HTMLInputElement;
@@ -53,7 +55,7 @@
   </div>
 
   <!-- Verification Code and Actions Field -->
-  <div class="grid gap-4">
+  <div class="flex gap-4 items-end">
     <Input
       id="totp-verify"
       type="text"
@@ -66,7 +68,6 @@
     />
 
     <!-- Buttons -->
-    <div class="grid grid-cols-2 gap-4">
       <Button
         variant="secondary"
         class="flex-1"
@@ -89,6 +90,5 @@
           {$_("settings.security.totp_verify_btn")}
         {/if}
       </Button>
-    </div>
   </div>
 </div>

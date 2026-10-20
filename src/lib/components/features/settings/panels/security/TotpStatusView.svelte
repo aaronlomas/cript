@@ -10,14 +10,16 @@
   import Switch from "$lib/components/core/primitives/Switch.svelte";
 
   //Props
-  let { isEnabled, processing, error, onStartSetup, onConfirmDisable } =
-    $props<{
-      isEnabled: boolean;
-      processing: boolean;
-      error: string;
-      onStartSetup: () => void;
-      onConfirmDisable: () => void;
-    }>();
+  interface Props {
+    isEnabled: boolean;
+    processing: boolean;
+    error: string;
+    onStartSetup: () => void;
+    onConfirmDisable: () => void;
+  }
+
+  let { isEnabled, processing, error, onStartSetup, onConfirmDisable }: Props =
+    $props();
 </script>
 
 <div

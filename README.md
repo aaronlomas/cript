@@ -109,9 +109,6 @@ pnpm tauri build
 
 # Type-check the interface
 pnpm check
-
-# Run the component workshop
-pnpm storybook
 ```
 
 ## Audit and Quality
