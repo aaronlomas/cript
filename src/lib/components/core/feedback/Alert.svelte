@@ -4,7 +4,7 @@
    * @description Component to display feedback messages (errors, warnings, successes).
    * 
    * @param {Object} props
-   * @param {"default" | "destructive" | "success" | "warning"} [props.variant="default"] - El estilo visual del alert.
+   * @param {"default" | "destructive" | "success" | "warning"} [props.variant="default"] - Visual style.
    * @param {string} [props.title] - optional title.
    * @param {import("svelte").Snippet} [props.children] - Content.
    * @param {string} [props.class=""] - Additional CSS classes.
