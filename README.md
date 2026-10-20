@@ -1,6 +1,6 @@
 # Cript — Credential Manager
 
-<img width="1100" height="720" alt="image" src="https://github.com/user-attachments/assets/75666c5a-c670-4493-a774-1a32c6eb2356" />
+<img width="1100" height="720" alt="image" src="/src/assets/criptimage.png" />
 
 Cript means **Security through Isolation**. We prioritize network-isolated security and practice digital transparency.
 
