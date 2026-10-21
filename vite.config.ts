@@ -28,6 +28,10 @@ export default defineConfig(async () => ({
     },
   },
 
+  // Component tests must resolve the browser build of Svelte instead of the
+  // server one, otherwise mounting a component fails in jsdom.
+  resolve: process.env.VITEST ? { conditions: ["browser"] } : undefined,
+
   clearScreen: false,
   server: {
     port: 1420,

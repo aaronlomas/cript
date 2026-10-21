@@ -54,6 +54,10 @@
     "documents": "Notes",
     "about": "About"
   },
+  "terminal": {
+    "hint": "Type 'help' for available commands.",
+    "error": "error: {message}"
+  },
   "general_view": {
     "general": "General",
     "desc": "Select a category."
