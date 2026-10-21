@@ -4,7 +4,7 @@
 
   interface Props {
     title: string;
-    description: string;
+    description?: string;
     icon?: any;
     iconSnippet?: Snippet;
     onclick?: (e: MouseEvent) => void;
@@ -54,11 +54,13 @@
     </div>
   {/if}
   <div>
-    <h3 class="text-lg font-semibold text-text-primary mb-1">
+    <h3 class="text-lg font-semibold text-text-primary {description ? 'mb-1' : ''}">
       {title}
     </h3>
-    <p class="text-sm text-text-muted">
-      {description}
-    </p>
+    {#if description}
+      <p class="text-sm text-text-muted">
+        {description}
+      </p>
+    {/if}
   </div>
 </button>

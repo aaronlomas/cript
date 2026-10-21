@@ -31,7 +31,6 @@
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <Card
         title={$_("settings.theme.mode_light")}
-        description={$_("settings.theme.mode_light_desc")}
         icon={IconSun}
         active={themeStore.colorScheme === "light"}
         onclick={() => handleColorSchemeChange("light")}
@@ -39,7 +38,6 @@
 
       <Card
         title={$_("settings.theme.mode_dark")}
-        description={$_("settings.theme.mode_dark_desc")}
         icon={IconMoon}
         active={themeStore.colorScheme === "dark"}
         onclick={() => handleColorSchemeChange("dark")}
@@ -47,7 +45,6 @@
 
       <Card
         title={$_("settings.theme.mode_system")}
-        description={$_("settings.theme.mode_system_desc")}
         icon={IconDeviceDesktop}
         active={themeStore.colorScheme === "system"}
         onclick={() => handleColorSchemeChange("system")}
