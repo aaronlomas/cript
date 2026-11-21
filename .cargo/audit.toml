@@ -24,11 +24,6 @@ ignore = [
     #         and its `rsa` dependency are never compiled into any Cript binary.
     "RUSTSEC-2023-0071",
 
-    # RUSTSEC-2024-0363: Binary protocol truncation in sqlx 0.7.4
-    # Origin: ghost in older lockfile. Cript's Cargo.toml pins sqlx = "0.8"
-    #         (resolves to 0.8.6). This advisory does not apply to any compiled code.
-    "RUSTSEC-2024-0363",
-
     # RUSTSEC-2024-0429: glib unsoundness - unfixable transitive dependency of Tauri/WebKit2GTK on Linux
     "RUSTSEC-2024-0429",
 ]
